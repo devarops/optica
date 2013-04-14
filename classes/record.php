@@ -8,13 +8,14 @@ class Record {
 		if($id > 0) {
 			$stmt = $db->prepare('SELECT * FROM record WHERE id = :id');
 			$stmt->bindParam(':id', $id);
-			if(!$stmt->execute()) {
-				die('El expediente solicitado no existe.');
-			}
+			$stmt->execute();
 
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			foreach($row as $key => $value) {
-				$this->$key = $value;
+			if($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+				foreach($row as $key => $value) {
+					$this->$key = $value;
+				}
+			} else {
+				die('<div class="notification error">El expediente solicitado no existe.</div>');
 			}
 
 			foreach(array('m_od', 'm_oi') as $item) {

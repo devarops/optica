@@ -9,7 +9,7 @@
 				$this->id = $id;
 				$result = $this->db->query('SELECT * FROM investigation WHERE id=' . $this->id);
 				if(!$result->rowCount()) {
-					die('La investigación solicitada no existe.');
+					die('<div class="notification error">La investigación solicitada no existe.</div>');
 				}
 				$row = $result->fetch(PDO::FETCH_ASSOC);
 				$this->id = $row['id'];

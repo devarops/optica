@@ -11,13 +11,14 @@
 				$this->id = $id;
 				$stmt = $this->db->prepare('SELECT * FROM patient WHERE id = :id');
 				$stmt->bindParam(':id', $this->id);
-				if(!$stmt->execute()) {
-					die('El paciente solicitado no existe.');
-				}
+				$stmt->execute();
 
-				$row = $stmt->fetch(PDO::FETCH_ASSOC);
-				foreach($row as $key => $value) {
-					$this->$key = $value;
+				if($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+					foreach($row as $key => $value) {
+						$this->$key = $value;
+					}
+				} else {
+					die('<div class="notification error">El paciente solicitado no existe.</div>');
 				}
 
 				$this->investigations = array();
