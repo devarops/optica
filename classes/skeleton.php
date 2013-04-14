@@ -9,13 +9,14 @@
 				$this->id = $id;
 				$stmt = $this->db->prepare('SELECT * FROM  WHERE id = :id');
 				$stmt->bindParam(':id', $this->id);
-				if(!$stmt->execute()) {
-					die('El  solicitado no existe.');
-				}
+				$stmt->execute();
 
-				$row = $stmt->fetch(PDO::FETCH_ASSOC);
-				foreach($row as $key => $value) {
-					$this->$key = $value;
+				if($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+					foreach($row as $key => $value) {
+						$this->$key = $value;
+					}
+				} else {
+					die('<div class="notification error">El _ solicitado no existe.</div>');
 				}
 			} else {
 				$this->id = 0;

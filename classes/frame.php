@@ -16,7 +16,7 @@
 						$this->$key = $value;
 					}
 				} else {
-					die('El armazón solicitado no existe.');
+					die('<div class="notification error">El armazón solicitado no existe.</div>');
 				}
 
 			} else {
