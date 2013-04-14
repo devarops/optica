@@ -164,6 +164,8 @@ ul#mainmenu {
 	color: #d8000c;
 	border-color: #d8000c;
 	background-color: #ffbaba;
+} .error {
+	color: #d8000c;
 }
 
 @media screen and (max-width: 800px) {
