@@ -9,7 +9,7 @@
 				//$stmt = $db->prepare('SELECT r.id AS record_id, p.id AS patient_id, p.firstname, p.lastname FROM patient AS p, record AS r WHERE r.patient_id = p.id AND r.reference LIKE :ref AND r.add_date BETWEEN :date_from AND :date_to GROUP BY p.id ORDER BY r.add_Date');
 
 				//$stmt = $db->prepare('SELECT record_id, patient_id, firstname, lastname FROM (SELECT r.id AS record_id, p.id AS patient_id, p.firstname AS firstname, p.lastname AS lastname FROM record AS r, patient AS p WHERE r.patient_id = p.id AND r.reference LIKE :ref AND r.add_date BETWEEN :date_from AND :date_to ORDER BY r.add_date DESC) AS d GROUP BY patient_id');
-				$stmt = $db->prepare('SELECT record_id, patient_id, firstname, lastname FROM (SELECT r.id AS record_id, p.id AS patient_id, p.firstname AS firstname, p.lastname AS lastname FROM record AS r, patient AS p WHERE r.patient_id = p.id AND r.reference LIKE :ref AND r.add_date >= :date_from AND r.add_date <= :date_to ORDER BY r.add_date DESC) AS d GROUP BY patient_id');
+				$stmt = $db->prepare('SELECT record_id, patient_id, firstname, lastname FROM (SELECT r.id AS record_id, p.id AS patient_id, p.firstname AS firstname, p.lastname AS lastname FROM record AS r, patient AS p WHERE r.patient_id = p.id AND r.reference LIKE :ref AND r.add_date >= CAST(:date_from AS date) AND r.add_date <= DATE_ADD(CAST(:date_to AS date), INTERVAL 1 DAY) ORDER BY r.add_date DESC) AS d GROUP BY patient_id');
 				$stmt->bindParam(':date_from', $_POST['date_from']);
 				$stmt->bindParam(':date_to', $_POST['date_to']);
 				$stmt->bindParam(':ref', $ref);
