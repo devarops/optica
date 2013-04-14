@@ -1,0 +1,51 @@
+% Remission note template (Patient's version)
+% ===========================================
+% Version 0.2
+% For splitting in half: http://tex.stackexchange.com/questions/4243/spliting-a-page-in-half-horizontally
+
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{color}
+%\usepackage{arydshln} % Dotted lines
+\pagestyle{fancy}
+
+% Header config
+\headheight = 55pt
+\renewcommand{\headrulewidth}{0pt}
+\lhead{\textbf{Beatriz Mayoral}\\ \scriptsize{R.F.C MAPB-590708-MF0 \\ Alfonso Ortiz Tirado No. 16-A \\ Col. Centro, Hermosillo, Sonora}}
+\rhead{\includegraphics[height=50pt]{/var/www/resources/img/logo-horus-large.png}}
+\lfoot{\footnotesize{\textbf{Horario}\\ Lunes a Viernes:\\ 9:00 -- 1:00 y 4:00 -- 7:00\\ Sábado: 9:00 -- 1:00\\ \textbf{Teléfono} 212-66-22}}
+\cfoot{}
+
+\footskip = 2pt
+
+\begin{document}
+
+{\color{red}\section*{$$N^{o}_{.} ~ #id#$$}} % * removes the numbering
+
+\renewcommand{\arraystretch}{1.5}
+\begin{center}
+	\begin{tabular}{p{7cm} r}
+		Nombre & #patient_firstname# #patient_lastname# \\% \hdashline[1.5pt/4pt]
+		Teléfono & #patient_telephone# \\% \hdashline[1.5pt/4pt]
+		Fecha de visita & #add_date# \\
+	\end{tabular}
+\end{center}
+
+
+% A center-positioned table containing product descriptions, prices, subtotal, abono, and total
+#latex_product_table#
+
+\end{document}
+
+%Add date: #add_date#
+
+%Process: #process#
+
+%#latex_product_table#
+
+%\end{letter}
+%\end{document}

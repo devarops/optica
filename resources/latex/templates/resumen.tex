@@ -1,0 +1,40 @@
+% Remission note template (Patient's version)
+% ===========================================
+% Version 0.2
+% For splitting in half: http://tex.stackexchange.com/questions/4243/spliting-a-page-in-half-horizontally
+
+\documentclass[12pt]{letter}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{color}
+%\usepackage{arydshln} % Dotted lines
+\pagestyle{fancy}
+
+\signature{Opt. Beatriz Mayoral}
+
+% Header config
+\headheight = 55pt
+\footskip = 25pt
+\renewcommand{\headrulewidth}{0pt}
+\lhead{\textbf{Beatriz Mayoral}\\ \scriptsize{R.F.C MAPB-590708-MF0 \\ Alfonso Ortiz Tirado No. 16-A \\ Col. Centro, Hermosillo, Sonora}}
+\rhead{\includegraphics[height=50pt]{/var/www/resources/img/logo-horus-large.png}}
+\cfoot{}
+
+\begin{document}
+\begin{letter}
+
+	\begin{flushright}
+		Hermosillo, Sonora a \today\\
+		#reference#\\
+	\end{flushright}
+	\vspace{70pt}
+
+	Se practicó examen de la vista a \textbf{#patient_firstname# #patient_lastname#} #resume#\\
+
+	\vspace{70pt}
+	\closing{Atentamente,}
+
+\end{letter}
+\end{document}

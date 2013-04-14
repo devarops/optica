@@ -1,0 +1,54 @@
+% Remission note template (Patient's version)
+% ===========================================
+% Version 0.2
+% For splitting in half: http://tex.stackexchange.com/questions/4243/spliting-a-page-in-half-horizontally
+
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{longtable}
+\usepackage[table]{xcolor}
+\pagestyle{fancy}
+
+% Header config
+\headheight = 55pt
+\renewcommand{\headrulewidth}{0pt}
+\lhead{\textbf{Beatriz Mayoral}\\ \scriptsize{R.F.C MAPB-590708-MF0 \\ Alfonso Ortiz Tirado No. 16-A \\ Col. Centro, Hermosillo, Sonora}}
+\rhead{\includegraphics[height=50pt]{/var/www/resources/img/logo-horus-large.png}}
+\cfoot{}
+
+\footskip = 0pt
+
+\begin{document}
+	\begin{center}\textbf{#header#}\end{center}
+
+	\renewcommand{\arraystretch}{1.3}
+	\begin{center}
+		{\footnotesize
+			\rowcolors{2}{white}{lightgray}
+			\begin{longtable}{l l l}
+				\textbf{Nombre} & \textbf{Apellido} & \textbf{Diagnóstico}\\ \hline \hline
+				#diagnostics_list#
+				\hline
+			\end{longtable}
+		}
+	\end{center}
+
+	\textbf{Resumen de diagnosticos}
+	\begin{center}
+		\rowcolors{2}{white}{lightgray}
+		\begin{tabular}{l p{1.5cm} p{1.5cm}}
+			\textbf{Total de personas revisadas\hspace{1.5cm}} & #num_patients# & \\
+			\hspace{1cm} \textbf{Ametropías} & & \\
+			\hspace{2cm} Astigmatismo & #astigmatismo_n# & #astigmatismo_p#\% \\
+			\hspace{2cm} Miopía & #miopia_n# & #miopia_p#\% \\
+			\hspace{2cm} Hipermetropía & #hipermetropia_n# & #hipermetropia_p#\% \\
+			\hspace{1cm} \textbf{Presbícia} & #presbicia_n# & #presbicia_p#\% \\
+			\hspace{1cm} \textbf{Anisometropía} & #anisometropia_n# & #anisometropia_p#\% \\
+		\end{tabular}
+	\end{center}
+
+\end{document}
