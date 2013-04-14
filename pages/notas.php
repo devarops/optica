@@ -90,9 +90,25 @@
 						jQuery(this).val(ui.item.label);
 						jQuery(this).siblings('input[type=hidden]').val(ui.item.id);
 						jQuery(this).parent().siblings('.iprice').children('input[type=number]').val(ui.item.price).change();
+
+						// If jQuery(next_elem).hasClass('error'), remove it
 					}
 					return false;
 				}});
+			}
+		});
+
+		//jQuery('.item_name').change(function() {
+		jQuery('body').on('change', '.item_name', function() {
+
+			if(jQuery(this).hasClass('frame')) {
+				frame_id = jQuery(this).val();
+				if(available_frames.indexOf(frame_id) == -1) {
+					errormsg = jQuery('<p class="small error">El armazón ' + jQuery(this).val() + ' no existe o ya fue vendido.</p>').delay('4000').fadeOut();
+					jQuery(this).parent().append(errormsg);
+					jQuery(this).val('');
+					jQuery(this).parent().siblings('.iprice').children('input[type=number]').val('').change();
+				}
 			}
 		});
 
@@ -134,7 +150,7 @@
 	function add_product_row() {
 		new_row = jQuery('#product_list tbody > tr:last').clone(true);
 		jQuery(new_row).children('.iname').children().remove();
-		jQuery(new_row).children('.iname').append('<input type="text" name=item_name[]" class="item_name" placeholder="Nombre o descripción del producto" style="width: 80%;"><input type="hidden" name="item_id[]" class="item_id">');
+		jQuery(new_row).children('.iname').append('<input type="text" name=item_name[]" class="item_name" placeholder="Producto" style="width: 80%;"><input type="hidden" name="item_id[]" class="item_id">');
 		new_row.insertAfter('#product_list tbody > tr:last');
 		jQuery('#product_list tbody > tr:last input').val('');
 	}
@@ -191,7 +207,7 @@
 			<tbody>
 				<tr>
 					<td><select name="item_type[]" class="item_type"><option value="lens">Lente</option><option value="frame">Armazón</option><option selected value="other">Otro</option></select></td>
-					<td class="iname"><input type="text" name="item_name[]" class="item_name" placeholder="Nombre o descripción del producto" style="width: 80%;"><input type="hidden" name="item_id[]" class="item_id" value=""></td>
+					<td class="iname"><input type="text" name="item_name[]" class="item_name" placeholder="Producto" style="width: 80%;"><input type="hidden" name="item_id[]" class="item_id" value=""></td>
 					<td class="iprice"><input type="number" name="item_price[]" class="product_price" placeholder="Precio" min="0" step="any"></td>
 					<td><a class="rem_product" title="Borrar renglón" style="display: inline-block; cursor: pointer; margin: 60% 0 0 0;"><img src="resources/img/icon-delete.png" height="16" width="16" alt="Borrar renglón"></a></td>
 				</tr>
