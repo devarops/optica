@@ -126,8 +126,9 @@
 				echo 'Could not write to ', $filename;
 			}
 			fclose($fh);
-			chmod($dir, 0666, 0777);
+			chmod($dir, 0777, 0777);
 			chmod($dir . $filename . '.tex', 0766);
+			chmod($dir . $filename . '.pdf', 0766);
 		} else {
 			echo 'Miserable failure while opening ', $filename, ' for writing.';
 		}
