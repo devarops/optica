@@ -37,8 +37,7 @@
 				'miopía'          => 0,
 				'hipermetropía'   => 0,
 				'presbicia'       => 0,
-				'anisometropía'   => 0,
-				'astenopía'       => 0
+				'anisometropía'   => 0
 			);  
 
 			foreach($result as $row) {
@@ -80,7 +79,7 @@
 			$rn->add_date     = substr($rn->add_date, 0, -9);
 			$rn->patient_firstname = $patient->firstname;
 			$rn->patient_lastname  = $patient->lastname;
-			$rn->patient_telephone = (isset($patient->telephone) ? $patient->telephone : '---');
+			$rn->patient_telephone = (isset($patient->phone) ? $patient->phone : '---');
 			$rn->latex_product_table = latex_product_table($rn->get_product_list(), $rn->down_payment); // Down payment is really a "donation"..
 
 			if($_REQUEST['type'] == 'patient_remission') {
@@ -126,7 +125,8 @@
 				echo 'Could not write to ', $filename;
 			}
 			fclose($fh);
-			chmod($dir, 0777, 0777);
+			//chmod($dir, 0777, 0777); // 2013-08-15
+			chmod($dir, 0777);
 			chmod($dir . $filename . '.tex', 0766);
 			chmod($dir . $filename . '.pdf', 0766);
 		} else {
