@@ -89,35 +89,36 @@ class Record {
 			'miopía' => False,
 			'hipermetropía' => False,
 			'presbicia' => False,
-			'anisometropía' => False,
-			'astenopía' => False
+			'anisometropía' => False
 		);
 
 		//$ecea = $this->ecea_split($this->m_od);
 
 		// Astigmatismo
-		if(!empty($this->m_od_cylinder)) {
+		//if((!empty($this->m_od_cylinder) || !empty($this->m_oi_cylinder)) && ($this->m_od_cylinder != 0 && $this->m_oi_cylinder != 0)) { // Replaced 2013-08-15
+		if((!empty($this->m_od_cylinder) && $this->m_od_cylinder != 0) || (!empty($this->m_oi_cylinder) && $this->m_oi_cylinder != 0)) {
 			$conditions['astigmatismo'] = True;
 		}
 
 		// Miopía / Hipermetropía
-		if(!empty($this->m_od_sphere)) {
-			if($this->m_od_sphere < 0) {
+		if(!empty($this->m_od_sphere) || !empty($this->m_oi_sphere)) {
+			if($this->m_od_sphere < 0 || $this->m_oi_sphere < 0) {
 				$conditions['miopía'] = True;
-			} else {
+			}
+			if($this->m_od_sphere > 0 || $this->m_oi_sphere > 0) {
 				$conditions['hipermetropía'] = True;
 			}
 		}
 
 		// Presbicia
-		if(!empty($this->m_od_addition)) {
+		if((!empty($this->m_od_addition) && $this->m_od_addition > 0) || (!empty($this->m_oi_addition) && $this->m_oi_addition > 0)) {
 			$conditions['presbicia'] = True;
 		}
 
 		// Anisometropía
 		if(isset($this->m_od_sphere) || isset($this->m_od_cylinder)) {
 			//$ecea_oi = $this->ecea_split($this->m_oi);
-			if( (abs($this->m_od_sphere) - $this->m_oi_sphere >= 100) || (abs($this->m_od_cylinder) - $this->m_oi_cylinder >= 100) ) {
+			if( abs($this->m_od_sphere - $this->m_oi_sphere >= 100) || abs($this->m_od_cylinder - $this->m_oi_cylinder >= 100) ) {
 				$conditions['anisometropía'] = True;
 			}
 		}
@@ -126,18 +127,7 @@ class Record {
 		if(!in_array(True, $conditions)) {
 			$conditions['emetropía'] = True;
 		}
-
-		// Astenopía
 		
-		/*
-		echo 'M_OD :: ', print_r($ecea), '<br>';
-		echo 'This patient has: <br>';
-		foreach($conditions as $key => $val) {
-			if($val) { echo $key, '<br>'; }
-		}
-		echo '<br><br>';
-		 */
-
 		return $conditions;
 	}
 
