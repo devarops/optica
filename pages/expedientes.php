@@ -60,6 +60,18 @@
 		}
 	}
 
+	function format_twonum(identifier) {
+		var str = jQuery(identifier).val();
+		blankspace_index = str.indexOf(' ');
+		if(blankspace_index !== -1) {
+			if(str.indexOf('/') == -1) {
+				str = str.replace(' ', '/');
+			}
+			jQuery(identifier).val(str);
+		}
+
+	}
+
 	function unlock_new_record() {
 		jQuery('#record').find('input').removeAttr('disabled');
 		jQuery('#record').find('textarea').removeAttr('disabled');
@@ -209,8 +221,8 @@
 			</tr>
 			<tr>
 				<td>
-					<label for="addictions">Addiciones</label><br>
-					<input type="text" name="addictions" id="addictions" placeholder="Addicciones" tabindex="18" value="<?php if(isset($record->addictions)) { echo $record->addictions; } ?>">
+					<label for="addictions">Adicciones</label><br>
+					<input type="text" name="addictions" id="addictions" placeholder="Adicciones" tabindex="18" value="<?php if(isset($record->addictions)) { echo $record->addictions; } ?>">
 				</td>
 				<td>
 					<label for="w_od">W:OD</label><br>
@@ -327,7 +339,7 @@
 			<tr>
 				<td>
 					<label for="conversion_dv">Conversion DV</label><br>
-					<input type="number" name="conversion_dv" id="conversion_dv" placeholder="Conversion DV" value="<?php if(isset($record->conversion_dv)) { echo $record->conversion_dv; } ?>" tabindex="43">
+					<input type="text" name="conversion_dv" id="conversion_dv" placeholder="          /          " value="<?php if(isset($record->conversion_dv)) { echo $record->conversion_dv; } ?>" oninput="format_twonum('#conversion_dv');" tabindex="43">
 				</td>
 				<td>
 					<label for="tipo_lc">Tipo LC</label><br>
@@ -345,7 +357,7 @@
 				</td>
 				<td>
 					<label for="acomodacion_relativa">Acomodación relativa</label><br>
-					<input type="number" name="acomodacion_relativa" id="acomodacion_relativa" placeholder="Acomodación relativa" value="<?php if(isset($record->acomodacion_relativa)) { echo $record->acomodacion_relativa; } ?>" tabindex="46"><br>
+					<input type="text" name="acomodacion_relativa" id="acomodacion_relativa" placeholder="          /          " value="<?php if(isset($record->acomodacion_relativa)) { echo $record->acomodacion_relativa; } ?>" oninput="format_twonum('#acomodacion_relativa');" tabindex="46"><br>
 					<span class="small">Referencia: (+250 / -350)</span>
 				</td>
 				<td>
