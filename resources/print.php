@@ -9,6 +9,9 @@
 			$patient = new Patient($db, $record->patient_id);
 			$record->patient_firstname = $patient->firstname;
 			$record->patient_lastname  = $patient->lastname;
+			if(empty($record->reference)) {
+				$record->reference = 'Sin referencia';
+			}
 			$record->resume = $record->resume();
 			print_item($record, 'resumen', 'resources/latex/templates/resumen.tex');
 		} else if($_REQUEST['type'] == 'enlistados') {
