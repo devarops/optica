@@ -20,7 +20,8 @@
 		'armazones',
 		'notas',
 		'estadisticas',
-		'investigaciones'
+		'investigaciones',
+		'personal'
 	);
 	if(isset($_GET['page']) && in_array($_GET['page'], $pages)) {
 		$page = $_GET['page'];
@@ -194,6 +195,7 @@
 						<li><a href="?page=notas">Notas de remisión</a></li>
 						<li><a href="?page=estadisticas">Estadísticas</a></li>
 						<li><a href="?page=investigaciones">Investigaciones</a></li>
+						<li><a href="?page=personal">Personal</a></li>
 					</ul>
 				</nav>
 				<?php
