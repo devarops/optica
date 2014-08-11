@@ -254,9 +254,16 @@
 				</tr>
 
 				<tr>
-					<td colspan="4" style="text-align: right;">
+					<td colspan="2">
+						<?php
+							if(isset($rn) && $rn->comission_claimed > 0) {
+								echo '<span style="color: #090;">Comisión reclamada ' . $rn->comission_claimed . '.</span>';
+							}
+						?>
+					</td>
+					<td colspan="2" style="text-align: right;">
 						<?php if(isset($rn)) { ?>
-							<a href="?page=print&amp;type=patient_remission&amp;id=<?php echo $rn->id; ?>" target="_blank"><img src="resources/img/icon-print.png" height="16" width="16" alt="Print">&nbsp;&nbsp;&nbsp; Vista previa del versión del paciente</a><br>
+							<a href="?page=print&amp;type=patient_remission&amp;id=<?php echo $rn->id; ?>" target="_blank"><img src="resources/img/icon-print.png" height="16" width="16" alt="Print">&nbsp;&nbsp;&nbsp; Vista previa de la versión del paciente</a><br>
 							<a href="?page=print&amp;type=optician_remission&amp;id=<?php echo $rn->id; ?>" target="_blank"><img src="resources/img/icon-print.png" height="16" width="16" alt="Print">&nbsp; Vista previa de la versión de la óptica</a><br><br>
 						<?php } ?>
 					</td>
