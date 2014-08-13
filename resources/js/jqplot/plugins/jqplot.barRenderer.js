@@ -2,10 +2,10 @@
  * jqPlot
  * Pure JavaScript plotting plugin using jQuery
  *
- * Version: 1.0.7
- * Revision: 1224
+ * Version: 1.0.4
+ * Revision: 1121
  *
- * Copyright (c) 2009-2013 Chris Leonello
+ * Copyright (c) 2009-2012 Chris Leonello
  * jqPlot is currently available for use in all personal or commercial projects 
  * under both the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL 
  * version 2.0 (http://www.gnu.org/licenses/gpl-2.0.html) licenses. This means that you can 
@@ -44,6 +44,14 @@
     // called with scope of series.
     $.jqplot.BarRenderer.prototype.init = function(options, plot) {
         // Group: Properties
+        // error bar properties
+        this.errorBarWidth = 6;
+        // error bar data points array
+        this.errorData = [];
+        // error bar color
+        this.errorBarColor = "#000000";
+        // font of the text to display above the error bars
+        this.errorBarTextFont = "bold 16px Arial";
         //
         // prop: barPadding
         // Number of pixels between adjacent bars at the same axis value.
@@ -115,7 +123,7 @@
         
         //////
         // This is probably wrong here.
-        // After going back and forth on whether renderer should be the thing
+        // After going back and forth on wether renderer should be the thing
         // or extend the thing, it seems that it it best if it is a property
         // on the thing.  This should be something that is commonized 
         // among series renderers in the future.
@@ -326,7 +334,7 @@
     }
 
     
-    $.jqplot.BarRenderer.prototype.draw = function(ctx, gridData, options, plot) {
+    $.jqplot.BarRenderer.prototype.draw = function(ctx, gridData, options, plot) { 
         var i;
         // Ughhh, have to make a copy of options b/c it may be modified later.
         var opts = $.extend({}, options);
@@ -350,7 +358,7 @@
         var nvals = temp[0];
         var nseries = temp[1];
         var pos = temp[2];
-		var points = [];
+        var points = [];
         
         if (this._stack) {
             this._barNudge = 0;
@@ -453,6 +461,7 @@
 						points.push([base+this.barWidth/2, gridData[i][1]]);
 					}
                     this._barPoints.push(points);
+                    
                     // now draw the shadows if not stacked.
                     // for stacked plots, they are predrawn by drawShadow
                     if (shadow && !this._stack) {
@@ -464,6 +473,17 @@
                     var clr = opts.fillStyle || this.color;
                     this._dataColors.push(clr);
                     this.renderer.shapeRenderer.draw(ctx, points, opts); 
+      
+                    //draw the error bars
+                    if (this.errorData.length > pos){
+                        if (this.errorData[pos].length > i ) { 
+                            var startPoint = [base, gridData[i][1] - ((ystart - gridData[i][1]) * this.errorData[pos][i].max)];
+                            var endPoint = [base, gridData[i][1] + ((ystart - gridData[i][1]) * this.errorData[pos][i].min)]; 
+                            var errorText = ((this.errorTextData.length > pos) && (this.errorTextData[pos].length > i))? this.errorTextData[pos][i] : "";
+                            var textVerticalAlignment = ystart > gridData[i][1]? 'bottom': 'top';
+                            this.renderer.drawErrorBars.call(this, ctx, startPoint, endPoint, errorText, textVerticalAlignment, 'center');
+                        }
+                    }
                 }
             }
             
@@ -513,7 +533,7 @@
                             xstart = 0;
                         }
                     }
-                    if ((this.fillToZero && this._plotData[i][0] < 0) || (this.waterfall && this._data[i][0] < 0)) {
+                    if ((this.fillToZero && this._plotData[i][1] < 0) || (this.waterfall && this._data[i][1] < 0)) {
                         if (this.varyBarColor && !this._stack) {
                             if (this.useNegativeColors) {
                                 opts.fillStyle = negativeColors.next();
@@ -521,9 +541,6 @@
                             else {
                                 opts.fillStyle = positiveColors.next();
                             }
-                        }
-                        else {
-                            opts.fillStyle = negativeColor;
                         }
                     }
                     else {
@@ -560,6 +577,17 @@
                     var clr = opts.fillStyle || this.color;
                     this._dataColors.push(clr);
                     this.renderer.shapeRenderer.draw(ctx, points, opts);
+                    
+                    //draw the error bars
+                    if (this.errorData.length > pos){
+                        if (this.errorData[pos].length > i ) { 
+                            startPoint = [gridData[i][0] + ((gridData[i][0] - xstart) * this.errorData[pos][i].max), base];
+                            endPoint = [gridData[i][0] - ((gridData[i][0] - xstart) * this.errorData[pos][i].min), base];
+                            errorText = ((this.errorTextData.length > pos) && (this.errorTextData[pos].length > i))? this.errorTextData[pos][i] : ""; 
+                            var textHorizontalAlignment = xstart > gridData[i][0]? 'right': 'left';
+                            this.renderer.drawErrorBars.call(this, ctx, startPoint, endPoint, errorText, 'middle', textHorizontalAlignment);
+                        }
+                    }
                 } 
             }
         }                
@@ -578,7 +606,46 @@
         
     };
     
-     
+    //draw the error bars
+    $.jqplot.BarRenderer.prototype.drawErrorBars = function(ctx, startPoint, endPoint, errorText, vertAlign, horizAlign) { 
+        
+        //set the style properties
+        ctx.lineWidth = this.errorBarWidth;
+        ctx.strokeStyle = this.errorBarColor;
+        ctx.fillStyle = this.errorBarColor;
+        ctx.textAlign = horizAlign;
+        ctx.textBaseline = vertAlign;
+        ctx.font = this.errorBarTextFont;
+  
+        var w = this.barWidth / 4;
+        
+        // only draw error bars if there is an error (otherwise it would draw a pointless bar ontop of each series)
+        if ((Math.abs(startPoint[0] - endPoint[0]) > 0.00001) || (Math.abs(startPoint[1] - endPoint[1]) > 0.00001)){
+            
+            // draw the main error bar line
+            strokePath(ctx, startPoint, endPoint);
+
+            //draw ticks
+            if (this.barDirection == 'vertical'){
+                strokePath(ctx, [startPoint[0] - w, startPoint[1]], [startPoint[0] + w, startPoint[1]]); 
+                strokePath(ctx, [endPoint[0] - w, endPoint[1]], [endPoint[0] + w, endPoint[1]]);  
+                if (errorText != ""){ctx.fillText(errorText, startPoint[0], startPoint[1]);}  
+            } else {
+                strokePath(ctx, [startPoint[0], startPoint[1] - w], [startPoint[0], startPoint[1] + w]); 
+                strokePath(ctx, [endPoint[0], endPoint[1] - w], [endPoint[0], endPoint[1] + w]); 
+                if (errorText != ""){ctx.fillText(errorText, startPoint[0], startPoint[1]);}  
+            }
+        }
+    }
+    
+    //helper function for stroking a path
+    function strokePath(ctx, p1, p2){
+        ctx.beginPath();
+        ctx.moveTo(p1[0], p1[1]);
+        ctx.lineTo(p2[0], p2[1]);
+        ctx.stroke();
+    }
+    
     // for stacked plots, shadows will be pre drawn by drawShadow.
     $.jqplot.BarRenderer.prototype.drawShadow = function(ctx, gridData, options, plot) {
         var i;
@@ -797,4 +864,4 @@
     }
     
     
-})(jQuery);
+})(jQuery);    

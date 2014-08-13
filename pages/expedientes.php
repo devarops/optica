@@ -319,8 +319,23 @@
 					<span><?php if(isset($record->k_oi)) { echo $record->k_eval('k_oi'); } ?></span>
 				</td>
 				<td>
-					<label for="lectura">Lectura (WPM)</label><br>
+					<label for="lectura">Lectura (Palabras por minuto)</label><br>
 					<input type="text" name="lectura" id="lectura" placeholder="Lectura" value="<?php if(isset($record->lectura)) { echo $record->lectura; } ?>" tabindex="40">
+				</td>
+				<td>
+					<?php
+						// Should probably be called via AJAX, as to allow for usage on new patients. Testing algorithm here though.
+						// Ref val PPM
+						// * wpm, age interval +/- 1 year, avg. and std. dev. color indication for good/bad, show sample size in title text.
+						// * on entering WPM, add dropdown with "grado escolar"
+
+						if(isset($patient->birthdate) && isset($record)) {
+							$statistics = new Statistics($db);
+							$data       = $statistics->getWpmData($record->add_date - $patient->birthdate);
+
+							printf('Avg: %.2f<br>σ: %.2f<br>pop size: %d', $data['average'], $data['std_dev'], $data['sample_size']);
+						}
+					?>
 				</td>
 			</tr>
 			<tr>
