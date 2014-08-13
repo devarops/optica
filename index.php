@@ -6,6 +6,7 @@
 	require_once('classes/patient.php');
 	require_once('classes/investigation.php');
 	require_once('classes/remission_note.php');
+	require_once('classes/statistics.php');
 
 	/* Print case must go before everything else, since we'll be handling other headers */
 	if(isset($_GET['page']) && $_GET['page'] == 'print') {
@@ -171,7 +172,7 @@
 		<script src="resources/js/jquery.tablesorter.min.js"></script>
 		<?php if($page == 'estadisticas') { ?>
 		<script src="resources/js/jqplot/jquery.jqplot.min.js"></script>
-		<script src="resources/js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+		<script src="resources/js/jqplot/plugins/jqplot.barRenderer.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>

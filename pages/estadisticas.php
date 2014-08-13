@@ -1,24 +1,32 @@
 <?php
-	$result = $db->query("SELECT DATE_FORMAT(DATE_SUB(r.add_date, INTERVAL p.birthdate YEAR), '%y') AS age, AVG(r.lectura) AS avg_wpm FROM record AS r, patient AS p WHERE r.patient_id = p.id AND lectura > 0 GROUP BY age");
-	$output = '';
-	while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-		if($row['age'] >= 5 && $row['age'] <= 15) {
-			$output .= '[' . $row['age'] . ', ' . $row['avg_wpm'] . '], ';
-		}
+	$statistics = new Statistics($db);
+	$data       = $statistics->getWpmData();
+
+	$avg = '';
+	$std = '';
+
+	foreach($data as $age => $entry) {
+		$avg .= '[' . $age . ', ' . $entry['average'] . '], ';
+		$std .= '{ min: 0.1, max: 0.2 }, '; // Testing
 	}
 ?>
 
 <script>
 	jQuery(document).ready(function() {
-		var avg_wpm = [<?php echo substr($output, 0, -2); ?>];
-
-		console.log(avg_wpm);
+		var avg_wpm = [<?php echo substr($avg, 0, -2); ?>];
+		var std_dev = [<?php echo substr($std, 0, -2); ?>];
 
 		$('#avg_wpm_chart').jqplot([avg_wpm], {
 			title:'Promedio de palabras por minuto',
 			seriesDefaults:{
 				renderer:$.jqplot.BarRenderer,
-				rendererOptions: { varyBarColor: false },
+				rendererOptions: {
+					varyBarColor: false,
+					errorBarWidth: 2,
+					errorData: std_dev,
+					errorTextData: [["foo"]],
+					barDirection: "vertical",
+				},
 			},
 			axes:{
 				xaxis: {
