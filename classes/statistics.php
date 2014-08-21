@@ -9,7 +9,7 @@
 		}
 
 		public function getWpmData($age = null) {
-			$result = $this->db->query("SELECT YEAR(r.add_date) - p.birthdate AS age, AVG(r.lectura) AS avg, STD(r.lectura) AS std, COUNT(r.lectura) AS sample_size FROM record AS r, patient AS p WHERE r.patient_id = p.id AND r.lectura > 0 group by age");
+			$result = $this->db->query("SELECT YEAR(r.add_date) - p.birthdate AS age, AVG(r.lectura) AS avg, STDDEV_SAMP(r.lectura) AS std, COUNT(r.lectura) AS sample_size FROM record AS r, patient AS p WHERE r.patient_id = p.id AND r.lectura > 0 GROUP BY age HAVING sample_size > 1");
 
 			$output = array();
 
@@ -17,7 +17,8 @@
 				$output[$row['age']] = array(
 					'average'     => $row['avg'],
 					'std_dev'     => $row['std'],
-					'sample_size' => $row['sample_size']
+					'sample_size' => $row['sample_size'],
+					'std_err'     => $row['std'] / sqrt($row['sample_size'])
 				);
 			}
 
@@ -28,5 +29,7 @@
 
 			return $output;
 		}
+
+		// WPM within 2 STDDEV?
 	}
 ?>
