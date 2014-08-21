@@ -14,11 +14,14 @@
 			$output = array();
 
 			while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+				$std_err = $row['std'] / sqrt($row['sample_size']);
+
 				$output[$row['age']] = array(
 					'average'     => $row['avg'],
 					'std_dev'     => $row['std'],
 					'sample_size' => $row['sample_size'],
-					'std_err'     => $row['std'] / sqrt($row['sample_size'])
+					'std_err'     => $std_err,
+					'conf_int'    => array('lower' => $row['avg'] - ($std_err * 1.96), 'upper' => $row['avg'] + ($std_err * 1.96))
 				);
 			}
 

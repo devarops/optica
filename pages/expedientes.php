@@ -335,7 +335,8 @@
 
 							printf('Avg: %.2f<br>σ: %.2f<br>pop size: %d<br>SE: %.2f', $data['average'], $data['std_dev'], $data['sample_size'], $data['std_err']);
 							$se_adjusted = 1.96 * $data['std_err'];
-							printf('<br><br>IC: %.2f - %.2f', $data['average'] - $se_adjusted, $data['average'] + $se_adjusted);
+							//printf('<br><br>IC: %.2f - %.2f', $data['average'] - $se_adjusted, $data['average'] + $se_adjusted);
+							printf('<br><br>IC: %.2f -- %.2f', $data['conf_int']['lower'], $data['conf_int']['upper']);
 						}
 					?>
 				</td>
