@@ -7,6 +7,21 @@
 		} else {
 			$record = $patient->get_latest_record();
 		}
+
+
+		// Handle image uploads
+		if(isset($_POST['btn_upload_image'])) {
+			$img  = new Image($db);
+			$desc = $_POST['description'];
+			$tags = array();
+
+			if($img->upload($patient->id, $_FILES['userfile'], $desc, $tags)) {
+				echo '<p class="notification success"><strong>Éxito:</strong> La imagen he sido guardada.</p>';
+			} else {
+				echo '<p class="notification error"><strong>Error:</strong> No se pudo guardar la imagen.</p>';
+			}
+		}
+
 	}
 
 	// Get distinct values for expediente->disco
@@ -112,6 +127,7 @@
 				}
 
 				jQuery.post('resources/ajax/wpm_normal_dist.php', { age: age, wpm: wpm }, function(data) {
+					jQuery('#wpm_chart').empty();
 					var values   = JSON.parse(data);
 					var wpm_plot = jQuery.jqplot('wpm_chart', [values.zipped, [values.patient]], {
 						title: {
@@ -557,6 +573,46 @@
 	jQuery('#record').find('textarea').attr('disabled', 'disabled');
 	jQuery('#record').find('select').attr('disabled', 'disabled');
 </script>
+
+
+<fieldset>
+	<legend>Imágenes</legend>
+	<div id="thumbnails">
+		<?php
+			$images = $patient->get_image_list();
+			if($images) {
+				foreach($images as $img) {
+					echo '<div class="thumbnail" style="background-image: url(\'' . $img->path . '\');">
+						<div class="tags">';
+					foreach($img->getTags() as $tag) {
+						echo '<span class="tag">' . $tag . '</span>';
+					}
+					echo '</div></div>' . PHP_EOL;
+				}
+			} else {
+				echo '<p>El paciente no cuenta con imágenes.</p>';
+			}
+		?>
+	</div>
+	<div class="clearfloat"></div>
+
+	<hr>
+
+	<h4>Subir nueva imagen</h4>
+	<form action="" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
+		<label for="userfile">Imagen</label>
+		<input type="file" name="userfile" id="userfile" style="border: none; box-shadow: none;">
+
+		<textarea name="description" id="description" placeholder="Notas misceláneas&hellip;"></textarea>
+
+		Tags...
+
+		<input type="submit" name="btn_upload_image" id="btn_upload_image" class="floatright" value="Subir imagen">
+	</form>
+</fieldset>
+
+
 
 <fieldset>
 	<legend>Historial</legend>

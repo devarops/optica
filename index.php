@@ -2,6 +2,7 @@
 	//error_reporting(E_ERROR | E_WARNING | E_PARSE);
 	require_once('db_connect.php');
 	require_once('classes/frame.php');
+	require_once('classes/image.php');
 	require_once('classes/record.php');
 	require_once('classes/patient.php');
 	require_once('classes/investigation.php');

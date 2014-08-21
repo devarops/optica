@@ -225,7 +225,7 @@
 				</tr>
 				<tr>
 					<th colspan="3" style="text-align: right; vertical-align: middle;"><label for="down_payment" style="font-size: 1.0em;">Abono</label></th>
-					<td style="text-align: right; width: 150px;"><input type="number" name="down_payment" id="down_payment" min="0" step="any" placeholder="Abono" style="width: 100px;"<?php if(isset($rn)) { echo ' value="', ($rn->down_payment > 0 ? $rn->down_payment : 0), '" disabled="disabled"'; } ?>></td>
+					<td style="text-align: right; width: 150px;"><input type="number" name="down_payment" id="down_payment" min="0" step="any" placeholder="Abono" style="width: 100px; text-align: right;"<?php if(isset($rn)) { echo ' value="', ($rn->down_payment > 0 ? $rn->down_payment : 0), '" disabled="disabled"'; } ?>></td>
 				</tr>
 				<tr>
 					<th colspan="3" style="text-align: right;">Saldo</th>
