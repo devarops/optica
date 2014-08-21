@@ -1,11 +1,14 @@
 <?php
 	$statistics = new Statistics($db);
 	$data       = $statistics->getWpmData();
+	$ages       = array_keys($data);
 
-	echo nl2br(print_r($data, true));
+	//echo nl2br(print_r($data, true));
 
 	$avg = '';
 	$err = '';
+
+
 
 	foreach($data as $age => $entry) {
 		$avg .= '[' . $age . ', ' . $entry['average'] . '], ';
@@ -26,29 +29,36 @@
 				background: 'rgba(255, 255, 255, 0.0)'
 			},
 			seriesDefaults: {
-				shadow:     true,
-				showMarker: true
+				shadow:     false,
+				markerOptions: {
+					show:   true,
+					shadow: false,
+					color:  'rgba(128, 128, 128, 0.8)',
+					size:   7,
+				}
 			},
 			axes: {
 				xaxis: {
 					label: 'Edad (años)',
 					labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-					pad: 0,
-					tickInterval: '1',
+					ticks: <?php echo json_encode($ages); ?>,
+					tickOptions: {
+						formatString: '%d'
+					}
 				},
 				yaxis: {
 					label: 'Lectura (ppm)',
 					labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
 					pad: 0,
-					tickOptions:{
-						formatString:'%.2f'
+					tickOptions: {
+						formatString: '%.2f'
 					}
 				},
 			},
 			highlighter: {
 				show: true,
 				tooltipAxes: 'y',
-				sizeAdjust: 15.5,
+				sizeAdjust: 12.5,
 			},
 		};
 
@@ -61,6 +71,7 @@
 					smooth:   true,
 					bands: {
 						fillColor: 'rgba(200, 180, 100, 0.35)',
+						//showLines: true,
 					}
 	            }
 	        }]
