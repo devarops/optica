@@ -110,6 +110,40 @@ ul#mainmenu {
 	color: #ccc;
 }
 
+/* Patient images */
+.thumbnail {
+	float: left;
+	width: 180px;
+	height: 120px;
+	margin: 3px;
+	border: 1px solid #ccc;
+	box-shadow: 1px 1px 2px rgba(128, 128, 128, 0.4);
+	position: relative;
+	cursor: pointer;
+	background-size: 180px 120px;
+	background-repeat: no-repeat;
+} .thumbnail .tags {
+	width: 100%;
+	color: #fff;
+	font-size: 0.8em;
+	text-align: center;
+	padding-top: 5px;
+	min-height: 40px;
+	position: absolute;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.65);
+	display: none;
+} .thumbnail:hover .tags {
+	display: block;
+} .tags .tag {
+	margin: 2px;
+	padding: 4px 6px;
+	border: 1px solid #fff;
+	border-radius: 4px;
+	display: inline-block;
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* Misc */
 .clearfloat {
 	clear: both;

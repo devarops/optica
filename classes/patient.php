@@ -1,5 +1,6 @@
 <?php
 	require_once('record.php');
+	require_once('image.php');
 
 	class Patient {
 		protected $db;
@@ -132,6 +133,19 @@
 				$records[] = $row;
 			}
 			return $records;
+		}
+
+		public function get_image_list() {
+			$result = $this->db->query('SELECT id FROM image WHERE patient_id = ' . $this->id . ' ORDER BY created_at DESC');
+			if(!$result->rowCount()) {
+				return false;
+			}
+			$images = array();
+			while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+				$images[] = new Image($this->db, $row['id']);
+			}
+
+			return $images;
 		}
 	}
 ?>
