@@ -172,11 +172,12 @@
 		<script src="resources/js/jquery.tablesorter.min.js"></script>
 		<?php if($page == 'estadisticas') { ?>
 		<script src="resources/js/jqplot/jquery.jqplot.min.js"></script>
-		<script src="resources/js/jqplot/plugins/jqplot.barRenderer.js"></script>
+		<script src="resources/js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+		<script src="resources/js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
 		<?php } ?>
 
 		<script>
