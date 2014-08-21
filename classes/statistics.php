@@ -9,8 +9,12 @@
 		}
 
 		public function getWpmData($age = null) {
-			$result = $this->db->query("SELECT YEAR(r.add_date) - p.birthdate AS age, AVG(r.lectura) AS avg, STDDEV_SAMP(r.lectura) AS std, COUNT(r.lectura) AS sample_size FROM record AS r, patient AS p WHERE r.patient_id = p.id AND r.lectura > 0 GROUP BY age HAVING sample_size > 1");
+			$query = "SELECT YEAR(r.add_date) - p.birthdate AS age, AVG(r.lectura) AS avg, STDDEV_SAMP(r.lectura) AS std, COUNT(r.lectura) AS sample_size FROM record AS r, patient AS p WHERE r.patient_id = p.id AND r.lectura > 0 GROUP BY age HAVING sample_size > 1";
+			if($age && is_int($age)) {
+				$query .= " AND age = " . $age;
+			}
 
+			$result = $this->db->query($query);
 			$output = array();
 
 			while($row = $result->fetch(PDO::FETCH_ASSOC)) {

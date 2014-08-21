@@ -92,6 +92,71 @@
 		var available_discos = [<?php echo substr($discos, 0, -2); ?>];
 		jQuery('#disco').autocomplete({ source: available_discos });
 	});
+
+	jQuery(document).ready(function() {
+		jQuery('#lectura').bind('change', function(event) {
+			event.preventDefault();
+
+			var wpm = jQuery('#lectura').val();
+			var age = jQuery('#birthdate').val();
+			if(jQuery('#age_at_visit').length) { 
+				age = jQuery('#age_at_visit').val();
+			}
+
+			if(wpm && !isNaN(wpm) && wpm > 0) {
+				if(!age || isNaN(age)) {
+					// We need the patient's age to get the right wpm normal distribution
+					jQuery('#lectura-error').html('Por favor ingrese edad.').show();
+					jQuery('#birthdate').bind('change', function() { jQuery('#lectura').trigger('change'); });
+					return;
+				}
+
+				jQuery.post('resources/ajax/wpm_normal_dist.php', { age: age, wpm: wpm }, function(data) {
+					var values   = JSON.parse(data);
+					var wpm_plot = jQuery.jqplot('wpm_chart', [values.zipped, [values.patient]], {
+						title: {
+							text: 'Dist. normal PPM: ' + age + ' años',
+							fontSize: '10pt',
+						},
+						series: [
+							{
+								lineWidth: 1,
+								rendererOptions: { smooth: true },
+								markerOptions: {
+									size: 4,
+								}
+							},
+							{ 
+								showLine: false,
+								markerOptions: {
+									size:  8,
+									style: 'diamond'
+								}
+							}
+						],
+						axes: {
+							xaxis: {
+								ticks: values.x,
+								tickRenderer: jQuery.jqplot.CanvasAxisTickRenderer,
+								tickOptions: {
+									angle: -35,
+									formatString: '%d',
+									fontSize: '8pt',
+								}
+							},
+							yaxis: {
+							}
+						},
+					});
+				});
+
+				jQuery('#lectura-error').hide();
+			}
+
+		});
+
+		<?php if(isset($record->lectura)) { echo "jQuery('#lectura').trigger('change');"; } ?>
+	});
 </script>
 
 <h1>Expedientes</h1>
@@ -138,11 +203,11 @@
 					<label for="phone">Teléfono</label><br>
 					<input type="tel" name="patient[phone]" id="phone" placeholder="Teléfono" tabindex="7" value="<?php if(isset($patient->phone)) { echo $patient->phone; } ?>">
 				</td>
-<?php if(isset($patient->add_date)) { ?>
+				<?php if(isset($patient->add_date)) { ?>
 				<td style="vertical-align: middle;">
 					<span><em>Paciente desde: <?php echo substr($patient->add_date, 0, 10); ?></em>.</span>
 				</td>
-<?php } ?>
+				<?php } ?>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -176,9 +241,16 @@
 				</td>
 			</tr>
 		</table>
-			<!-- PATIENT ends here -->
+
+		<!-- PATIENT ends here -->
+
 		<table id="record" class="noeffects">
 			<input type="hidden" name="new_record" value="1">
+			<?php
+				if(isset($record) && is_numeric($patient->birthdate)) {
+					echo '<input type="hidden" id="age_at_visit" value="' . ($record->add_date - $patient->birthdate) . '">' . PHP_EOL;
+				}
+			?>
 			<tr>
 				<td colspan="2">
 					<label for="reference">Referencia</label><br>
@@ -323,22 +395,8 @@
 					<input type="text" name="lectura" id="lectura" placeholder="Lectura" value="<?php if(isset($record->lectura)) { echo $record->lectura; } ?>" tabindex="40">
 				</td>
 				<td>
-					<?php
-						// Should probably be called via AJAX, as to allow for usage on new patients. Testing algorithm here though.
-						// Ref val PPM
-						// * wpm, age interval +/- 1 year, avg. and std. dev. color indication for good/bad, show sample size in title text.
-						// * on entering WPM, add dropdown with "grado escolar"
-
-						if(isset($patient->birthdate) && isset($record)) {
-							$statistics = new Statistics($db);
-							$data       = $statistics->getWpmData($record->add_date - $patient->birthdate);
-
-							printf('Avg: %.2f<br>σ: %.2f<br>pop size: %d<br>SE: %.2f', $data['average'], $data['std_dev'], $data['sample_size'], $data['std_err']);
-							$se_adjusted = 1.96 * $data['std_err'];
-							//printf('<br><br>IC: %.2f - %.2f', $data['average'] - $se_adjusted, $data['average'] + $se_adjusted);
-							printf('<br><br>IC: %.2f -- %.2f', $data['conf_int']['lower'], $data['conf_int']['upper']);
-						}
-					?>
+					<span id="lectura-error" style="display: none; color: #900;"></span>
+					<div id="wpm_chart" class="chart" style="width: 230px; height: 150px; margin: -40px 0 0 -30px;"></div>
 				</td>
 			</tr>
 			<tr>
