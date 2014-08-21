@@ -51,13 +51,36 @@
 		}
 
 
-		public function setTags($tag_ids) {
+		public function createTag($tag_title) {
+			$stmt = $this->db->prepare('INSERT INTO tag (title) VALUES (:title)');
+			$stmt->bindParam(':title', $tag_title);
+			if(!$stmt->execute()) {
+				echo '<p class="notification error"><strong>Error:</strong> No se pudo crear el tag "' . $tag_title . '"</p>';
+			}
+		}
 
+
+		public function setTags($tag_ids) {
+			$stmt = $this->db->prepare('INSERT INTO ct_image_tag (image_id, tag_id) VALUES (:image_id, :tag_id)');
+			$stmt->bindParam(':image_id', $this->id);
+
+			foreach($tag_ids as $tag_id) {
+				$stmt->bindParam(':tag_id', $tag_id);
+				$stmt->execute();
+				echo 'setting tag ' . $tag_id;
+			}
 		}
 
 
 		public function getTags() {
-			return ['Some tag', 'Yet another tag'];
+			$result = $this->db->query("SELECT t.title FROM tag AS t, ct_image_tag AS ct WHERE ct.tag_id = t.id AND ct.image_id = " . $this->id);
+			$tags   = array();
+
+			while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+				$tags[] = $row['title'];
+			}
+
+			return $tags;
 		}
 
 
