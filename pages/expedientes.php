@@ -13,7 +13,7 @@
 		if(isset($_POST['btn_upload_image'])) {
 			$img  = new Image($db);
 			$desc = $_POST['description'];
-			$tags = array();
+			$tags = $_POST['tags'];
 
 			if($img->upload($patient->id, $_FILES['userfile'], $desc, $tags)) {
 				echo '<p class="notification success"><strong>Éxito:</strong> La imagen he sido guardada.</p>';
@@ -614,15 +614,37 @@
 		<?php
 			$images = $patient->get_image_list();
 			if($images) {
-				foreach($images as $img) {
-					echo '<div class="thumbnail" style="background-image: url(\'' . $img->path . '\');">
-						<div class="tags">';
+				foreach($images as $idx => $img) {
+					$taglist = array();
 					foreach($img->getTags() as $tag) {
+						$taglist[] = $tag;
+					}
+					sort($taglist);
+					echo '<div class="thumbnail fancybox" data-fancybox-group="image-gallery" data-fancybox-href="#gallery-item-' . $idx . '" style="background-image: url(\'' . $img->path . '\');">
+						<div class="tags">';
+					foreach($taglist as $tag) {
 						echo '<span class="tag">' . $tag . '</span>';
 					}
 					echo '</div></div>' . PHP_EOL;
+
+					echo '<div class="gallery-item" id="gallery-item-' . $idx . '" style="display: none;">';
+					echo '<img src="' . $img->path . '">';
+					echo '<table class="noeffects"><tbody><tr><td colspan="2" style="text-align: center;"><h3>Información</h3></td></tr>';
+					echo '<tr><th>Paciente</th><td>' . $patient->get_full_name() . '</td></tr>';
+					echo '<tr><th>Fecha</th><td>' . $img->created_at . '</td></tr>';
+					echo '<tr><td colspan="2">&nbsp;</td></tr>';
+					echo '<tr><th colspan="2">Descripción</th></tr>';
+					echo '<tr><td colspan="2">' . $img->description . '</td></tr>';
+					echo '<tr><th colspan="2">Etiquetas</th></tr>';
+					echo '<tr><td colspan="2"><ul>';
+					foreach($taglist as $tag) {
+						echo '<li>' . $tag . '</li>';
+					}
+					echo '</ul></td></tr>';
+					echo '</tbody></table>';
+					echo '</div>';
 				}
-			} else {
+			} else{
 				echo '<p>El paciente no cuenta con imágenes.</p>';
 			}
 		?>
@@ -633,15 +655,30 @@
 
 	<h4>Subir nueva imagen</h4>
 	<form action="" method="post" enctype="multipart/form-data">
-		<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
-		<label for="userfile">Imagen</label>
-		<input type="file" name="userfile" id="userfile" style="border: none; box-shadow: none;">
-
-		<textarea name="description" id="description" placeholder="Notas misceláneas&hellip;"></textarea>
-
-		Tags...
-
-		<input type="submit" name="btn_upload_image" id="btn_upload_image" class="floatright" value="Subir imagen">
+		<table class="noeffects">
+			<tbody>
+				<tr><td>
+					<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
+					<label for="userfile">Imagen a subir</label><br>
+					<input type="file" name="userfile" id="userfile" style="border: none; box-shadow: none;">
+				</td><td>
+					<label for="description">Descripción</label><br>
+					<textarea name="description" id="description" placeholder="Notas misceláneas&hellip;"></textarea>
+				</td><td>
+					<label for="tags">Etiquetas</label><br>
+					<select id="tags" name="tags[]" data-placeholder="Elige etiquetas" multiple class="chosen-select">
+						<option value></option>
+						<?php
+							$tags = Image::getTagOptions($db);
+							foreach($tags as $id => $tag) {
+								echo '<option value="' . $id . '">' . $tag . '</option>';
+							}
+						?>
+				</td><td>
+					<input type="submit" name="btn_upload_image" id="btn_upload_image" class="floatright" value="Subir imagen">
+				</td></tr>
+			</tbody>
+		</table>
 	</form>
 </fieldset>
 

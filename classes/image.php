@@ -4,6 +4,7 @@
 	class Image {
 		protected $db;
 		protected $base_path = 'resources/uploads/images/';
+		protected $allowed   = array(IMAGETYPE_PNG, IMAGETYPE_JPEG);//, IMAGETYPE_RAW);
 
 
 		public function __construct($db, $id = 0) {
@@ -29,7 +30,16 @@
 
 
 		public function upload($patient_id, $file, $description, $tag_ids) {
-			$target_path = $this->base_path . date('Y/m/') . $patient_id . '-' . basename($file['name']);
+			if(!$file['size'] || !in_array(exif_imagetype($file['tmp_name']), $this->allowed)) {
+				return false;
+			}
+
+			$target_dir  = $this->base_path . date('Y/m/');
+			$target_path = $target_dir . $patient_id . '-' . basename($file['name']);
+
+			if(!is_dir($target_dir)) {
+				mkdir($target_dir, 0777);
+			}
 
 			if(!move_uploaded_file($file['tmp_name'], $target_path)) {
 				return false;
@@ -67,7 +77,6 @@
 			foreach($tag_ids as $tag_id) {
 				$stmt->bindParam(':tag_id', $tag_id);
 				$stmt->execute();
-				echo 'setting tag ' . $tag_id;
 			}
 		}
 
@@ -108,5 +117,16 @@
 			}
 
 		}
+
+		public static function getTagOptions($db) {
+			$result = $db->query("SELECT id, title FROM tag");
+			$tags   = array();
+			while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+				$tags[$row['id']] = $row['title'];
+			}
+
+			return $tags;
+		}
+
 	}
 ?>
