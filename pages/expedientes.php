@@ -163,6 +163,39 @@
 							yaxis: {
 							}
 						},
+						canvasOverlay: {
+							show: true,
+							objects: [
+								{ dashedVerticalLine: {
+									name: '-2std',
+									x: values.x[2],
+									lineWidth: 1,
+									dashPattern: [3, 3],
+									yOffset: '0',
+									color: 'rgb(0, 0, 0)',
+									shadow: false
+								}},	
+								{ line: {
+									name: 'background',
+									start: [values.x[2], 0],
+									stop: [values.x[6], 0],
+									lineWidth: 200,
+									lineCap: 'butt',
+									color: 'rgba(220, 235, 255, 0.25)',
+									shadow: false
+								}},	
+								{ dashedVerticalLine: {
+									name: '+2std',
+									x: values.x[6],
+									lineWidth: 1,
+									dashPattern: [3, 3],
+									yOffset: '0',
+									color: 'rgb(0, 0, 0)',
+									shadow: false
+								}}
+
+							],
+						}
 					});
 				});
 

@@ -176,6 +176,7 @@
 		<script src="resources/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.highlighter.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+		<script src="resources/js/jqplot/plugins/jqplot.canvasOverlay.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
 

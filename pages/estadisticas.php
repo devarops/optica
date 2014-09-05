@@ -12,8 +12,8 @@
 
 	foreach($data as $age => $entry) {
 		$avg .= '[' . $age . ', ' . $entry['average'] . '], ';
-		//$err .= '[' . ($entry['average'] - $entry['std_dev']) . ', ' . ($entry['average'] + $entry['std_dev'])  . '], '; // Standard deviation
-		$err .= '[' . $entry['conf_int']['lower'] . ', ' . $entry['conf_int']['upper']  . '], '; // Confidence interval
+		$err .= '[' . ($entry['average'] - 2 * $entry['std_dev']) . ', ' . ($entry['average'] + 2 * $entry['std_dev'])  . '], '; // Standard deviation
+		//$err .= '[' . $entry['conf_int']['lower'] . ', ' . $entry['conf_int']['upper']  . '], '; // Confidence interval
 	}
 ?>
 
