@@ -165,12 +165,17 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Óptica Horus</title>
-		<link rel="stylesheet" href="style.css" type="text/css" media="screen">
-		<link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" media="screen">
-		<link rel="stylesheet" type="text/css" href="resources/js/jqplot/jquery.jqplot.min.css">
+		<link rel="stylesheet" type="text/css" href="style.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="resources/css/jquery-ui.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="resources/js/jqplot/jquery.jqplot.min.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="resources/js/jquery.fancybox.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="resources/js/chosen.min.css" media="screen">
 		<script src="resources/js/jquery.min.js"></script>
 		<script src="resources/js/jquery-ui.min.js"></script>
+		<script src="resources/js/chosen.jquery.min.js"></script>
 		<script src="resources/js/jquery.tablesorter.min.js"></script>
+		<script src="resources/js/jquery.mousewheel.pack.js"></script>
+		<script src="resources/js/jquery.fancybox.pack.js"></script>
 		<script src="resources/js/jqplot/jquery.jqplot.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
 		<script src="resources/js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
@@ -183,6 +188,27 @@
 		<script>
 			jQuery(document).ready(function() {
 				jQuery('table.tablesorter').tablesorter();
+
+				jQuery('.fancybox').fancybox({
+					maxWidth:    800,
+					maxHeight:   600,
+					fitToView:   false,
+					width:       '70%',
+					height:      '70%',
+					autoSize:    false,
+					closeClick:  false,
+					openEffect:  'none',
+					closeEffect: 'none',
+					mouseWheel:  true,
+					helpers: {
+						thumbs: {
+							width: 50,
+							height: 50
+						}
+					}
+				});
+
+				jQuery('.chosen-select').chosen();
 			});
 		</script>
 	</head>
