@@ -12,7 +12,7 @@
 				$stmt->bindParam(':id', $this->id);
 				$stmt->execute();
 				if(!$stmt->rowCount()) {
-					die('<div class="notification error"><p>La nota de remisión solicitado no existe.</p></div>');
+					die('<div class="notification error"><p>La nota de remisión solicitada no existe.</p></div>');
 				}
 
 				$row = $stmt->fetch(PDO::FETCH_ASSOC);

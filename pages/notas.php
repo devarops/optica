@@ -162,11 +162,16 @@
 
 <label for="search_kwds">Realizar búsqueda</label><br>
 <input type="search" name="search_kwds" id="search_kwds" oninput="patient_search();" tabindex="1" results="10" placeholder="Nombre(s) y/o apellido(s)">
+o
+<form action="" method="get" style="display: inline-block; width: 47%;">
+	<input type="hidden" name="page" value="notas">
+	<input type="search" name="id" id="search_id" tabindex="2" results="1" placeholder="ID de nota (Enter para buscar)" style="width: 90%;">
+</form>
 <div id="patient_search_result" class="search result"></div>
 
 <form action="" method="post">
 	<fieldset id="nota_remision">
-		<legend><?php echo (!isset($rn) ? 'Añadir nota de remisión' : 'Nota de remisión, ' . substr($rn->add_date, 0, 10)); ?></legend>
+		<legend><?php echo (!isset($rn) ? 'Añadir nota de remisión' : '#' . $rn->id . ' &mdash; Nota de remisión, ' . substr($rn->add_date, 0, 10)); ?></legend>
 		<table class="noeffects" style="width: 600px;">
 			<tbody>
 				<tr>
@@ -263,8 +268,8 @@
 					</td>
 					<td colspan="2" style="text-align: right;">
 						<?php if(isset($rn)) { ?>
-							<a href="?page=print&amp;type=patient_remission&amp;id=<?php echo $rn->id; ?>" target="_blank"><img src="resources/img/icon-print.png" height="16" width="16" alt="Print">&nbsp;&nbsp;&nbsp; Vista previa de la versión del paciente</a><br>
-							<a href="?page=print&amp;type=optician_remission&amp;id=<?php echo $rn->id; ?>" target="_blank"><img src="resources/img/icon-print.png" height="16" width="16" alt="Print">&nbsp; Vista previa de la versión de la óptica</a><br><br>
+							<a href="?page=print&amp;type=patient_remission&amp;id=<?php echo $rn->id; ?>" target="_blank">Vista previa de la versión del paciente &nbsp;<img src="resources/img/icon-print.png" height="16" width="16" alt="Print"></a><br>
+							<a href="?page=print&amp;type=optician_remission&amp;id=<?php echo $rn->id; ?>" target="_blank">Vista previa de la versión de la óptica &nbsp;<img src="resources/img/icon-print.png" height="16" width="16" alt="Print"></a><br><br>
 						<?php } ?>
 					</td>
 				</tr>
