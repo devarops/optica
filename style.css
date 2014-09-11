@@ -47,9 +47,6 @@ body {
 	border: 1px solid #ca0;
 } input:focus, textarea:focus, select:focus {
 	background-color: #efefef;
-} input:disabled, textarea:disabled, select:disabled {
-	background-color: #efefef;
-	border: 1px dashed #aaa;
 } label {
 	font-size: 0.8em;
 } table {
@@ -83,6 +80,13 @@ body {
 	margin: 2px 0;
 	padding: 10px 4px 8px 4px;
 	border: 1px solid #aaa;
+	border-left: 0;
+} input:disabled, textarea:disabled, select:disabled {
+	background-color: #efefef;
+	border: 1px dashed #aaa;
+}  div.input-group.disabled > div.input-addon {
+	background-color: #efefef;
+	border: 1px dashed #aaa;
 	border-left: 0;
 }
 
