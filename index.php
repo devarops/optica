@@ -23,7 +23,8 @@
 		'notas',
 		'estadisticas',
 		'investigaciones',
-		'personal'
+		'personal',
+		'herramientas'
 	);
 	if(isset($_GET['page']) && in_array($_GET['page'], $pages)) {
 		$page = $_GET['page'];
@@ -224,6 +225,7 @@
 						<li><a href="?page=estadisticas">Estadísticas</a></li>
 						<li><a href="?page=investigaciones">Investigaciones</a></li>
 						<li><a href="?page=personal">Personal</a></li>
+						<li><a href="?page=personal">Herramientas</a></li>
 					</ul>
 				</nav>
 				<?php
