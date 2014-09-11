@@ -5,9 +5,10 @@
 	require_once('classes/image.php');
 	require_once('classes/record.php');
 	require_once('classes/patient.php');
+	require_once('classes/employee.php');
+	require_once('classes/statistics.php');
 	require_once('classes/investigation.php');
 	require_once('classes/remission_note.php');
-	require_once('classes/statistics.php');
 
 	/* Print case must go before everything else, since we'll be handling other headers */
 	if(isset($_GET['page']) && $_GET['page'] == 'print') {
@@ -126,7 +127,9 @@
 		// ---------------
 		if(isset($_POST['btn_nota'])) {
 			if(!isset($_POST['patient_id']) || !is_numeric($_POST['patient_id'])) {
-				$message = array('<p>Le hace falta eligír un paciente.</p>', 'error');
+				$message = array('<p><strong>Error:</strong> Hace falta eligír un paciente.</p>', 'error');
+			} else if(!isset($_POST['salesperson_id']) || !is_numeric($_POST['salesperson_id'])) {
+				$message = array('<p><strong>Error:</strong> Hace falta eligír un vendedor.</p>', 'error');
 			} else {
 				$rn = new RemissionNote($db, (isset($_POST['remission_note_id']) ? $_POST['remission_note_id'] : 0));
 				unset($_POST['btn_nota']);

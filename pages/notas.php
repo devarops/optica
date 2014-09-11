@@ -27,11 +27,13 @@
 	}
 
 	// Autocomplete for salesperson
+	/* (!) Deprecated.
 	$result = $db->query('SELECT DISTINCT salesperson FROM remission_note ORDER BY salesperson DESC');
 	$salespeople = '';
 	while($row = $result->fetch(PDO::FETCH_ASSOC)) {
 		$salespeople .= '"' . $row['salesperson'] . '", ';
 	}
+	 */
 
 	// Autocomplete for process
 	$result = $db->query('SELECT DISTINCT process FROM remission_note ORDER BY process DESC');
@@ -114,8 +116,9 @@
 
 		// Cost calculation
 		jQuery('.product_price, #down_payment').change(function() {
-			var subtotal = 0;
-			var abono = 0;
+			var commission = 0;
+			var subtotal   = 0;
+			var abono      = 0;
 			
 			jQuery('#product_list .product_price').each(function(key, elem) {
 				item_val = parseFloat(jQuery(elem).val());
@@ -129,9 +132,13 @@
 				abono = 0;
 			}
 
+			commission = subtotal * 0.03;
+
+
 			jQuery('#subtotal').html(subtotal.toFixed(2));
 			jQuery('#total').html((subtotal - abono).toFixed(2));
 			jQuery('#total_hidden').val((subtotal - abono).toFixed(2));
+			jQuery('#commission').val('$' + commission.toFixed(2));
 		});
 	});
 
@@ -242,17 +249,29 @@ o
 				<tr>
 					<td colspan="2">
 						<label for="salesperson">Vendedor</label><br>
-						<input type="text" name="salesperson" id="salesperson" placeholder="Vendedor" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->salesperson, '" disabled="disabled"'; } ?>>
+						<!--<input type="text" name="salesperson" id="salesperson" placeholder="Vendedor" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->salesperson, '" disabled="disabled"'; } ?>>-->
+						<select name="salesperson_id" id="salesperson" placeholder="Vendedor" style="width: 90%;">
+							<option selected disabled>Vendedor</option>
+							<?php
+								foreach(Employee::getEmployees($db) as $employee) {
+									echo '<option value="' . $employee['id'] . '">' . $employee['name'] . '</option>' . PHP_EOL;
+								}
+							?>
+						</select>
 					</td>
-					<td rowspan="2" colspan="2">
-						<label for="observations">Observaciones</label><br>
-						<textarea name="observations" id="observations" placeholder="Observaciones" style="width: 90%; height: 90px;"<?php if(isset($rn)) { echo ' disabled="disabled">', (!empty($rn->observations) ? $rn->observations : ' '); } else { echo '>'; } ?></textarea>
-					</td>
-				</tr>
-				<tr>
 					<td colspan="2">
 						<label for="process">Proceso</label><br>
-						<input type="text" name="process" id="process" placeholder="<?php echo (isset($rn) ? $rn->process : 'Proceso'); ?>" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->process, '"'; } ?>>
+						<input type="text" name="process" id="process" style="width: 90%;" placeholder="<?php echo (isset($rn) ? $rn->process : 'Proceso'); ?>" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->process, '"'; } ?>>
+					</td>
+				</tr>
+				<t>
+					<td colspan="2">
+						<label for="commission">Comisión</label><br>
+						<input type="text" id="commission" name="commission" placeholder="Comisión" style="width: 78%;" disabled="disabled">
+					</td>
+					<td colspan="2">
+						<label for="observations">Observaciones</label><br>
+						<textarea name="observations" id="observations" placeholder="Observaciones" style="width: 90%; height: 90px;"<?php if(isset($rn)) { echo ' disabled="disabled">', (!empty($rn->observations) ? $rn->observations : ' '); } else { echo '>'; } ?></textarea>
 					</td>
 				</tr>
 				<tr>
