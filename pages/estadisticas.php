@@ -113,5 +113,6 @@
 	});
 </script>
 
-<h1>Estadísticas</h1>
-<div id="avg_wpm_chart" class="chart" style="width: 800px; height: 400px;"></div>
+<h1><img src="resources/img/icon-statistics.png" height="48" width="48" alt=""> Estadísticas</h1>
+
+<div id="avg_wpm_chart" class="chart" style="width: 100%; height: 450px;"></div>

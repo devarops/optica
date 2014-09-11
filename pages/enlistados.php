@@ -45,7 +45,7 @@
 	}
 ?>
 
-<h1>Enlistar pacientes</h1>
+<h1><img src="resources/img/icon-group.png" height="48" width="48" alt=""> Enlistar pacientes</h1>
 
 <form id="generate_enlistado" action="" method="post">
 	<table class="noeffects" style="width: auto;">

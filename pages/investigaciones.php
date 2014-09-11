@@ -15,7 +15,7 @@
 	}
 ?>
 
-<h1>Investigaciones</h1>
+<h1><img src="resources/img/icon-research.png" height="48" width="48" alt=""> Investigaciones</h1>
 
 <?php
 	if(empty($investigations)) {

@@ -1,4 +1,5 @@
-<h1>Personal</h1>
+<h1><img src="resources/img/icon-staff.png" height="48" width="48" alt=""> Personal</h1>
+
 <p>Historial de ventas, admin de cuentas, cambiar contrasena.</p>
 <p>Popup soliciting password when taking action.</p>
 

@@ -246,7 +246,7 @@
 	});
 </script>
 
-<h1>Expedientes</h1>
+<h1><img src="resources/img/icon-dossier.png" height="48" width="48" alt=""> Expedientes</h1>
 
 <label for="search_kwds">Realizar búsqueda</label><br>
 <input type="search" name="search_kwds" id="search_kwds" oninput="patient_search();" tabindex="1" results="10" placeholder="Nombre(s) y/o apellido(s)">
