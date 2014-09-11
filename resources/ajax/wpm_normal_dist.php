@@ -9,11 +9,15 @@
 
 	$data = $statistics->getWpmData($age);
 
+	if(!$data) {
+		die('false');
+	}
+
 	$avg     = (float) $data['average'];
 	$std_dev = (float) $data['std_dev'];
 
 	$points = [
-		$avg - ($std_dev * 4),
+//		$avg - ($std_dev * 4),
 		$avg - ($std_dev * 3),
 		$avg - ($std_dev * 2),
 		$avg - $std_dev,
@@ -21,7 +25,7 @@
 		$avg + $std_dev,
 		$avg + ($std_dev * 2),
 		$avg + ($std_dev * 3),
-		$avg + ($std_dev * 4),
+//		$avg + ($std_dev * 4),
 	];
 
 	function f($x, $u, $o) {
@@ -34,6 +38,5 @@
 		$y[] = f($x, $avg, $std_dev);
 	}
 
-	//echo json_encode(array('x' => $points, 'y' => $y));
 	echo json_encode(array('zipped' => array_map(null, $points, $y), 'patient' => [$wpm, f($wpm, $avg, $std_dev)], 'x' => $points, 'y' => $y));
 ?>

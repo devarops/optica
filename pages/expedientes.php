@@ -129,10 +129,16 @@
 				jQuery.post('resources/ajax/wpm_normal_dist.php', { age: age, wpm: wpm }, function(data) {
 					jQuery('#wpm_chart').empty();
 					var values   = JSON.parse(data);
+
+					if(!values) {
+						jQuery('#lectura-error').html('Actualmente no hay datos suficientes para este edad.').show();
+						return;
+					}
+
 					var wpm_plot = jQuery.jqplot('wpm_chart', [values.zipped, [values.patient]], {
 						title: {
-							text: 'Dist. normal PPM: ' + age + ' años',
-							fontSize: '10pt',
+							//text: 'Dist. normal PPM: ' + age + ' años',
+							//fontSize: '10pt',
 						},
 						series: [
 							{
@@ -152,15 +158,31 @@
 						],
 						axes: {
 							xaxis: {
+								// min = max(0, xbar - 2 std)
 								ticks: values.x,
 								tickRenderer: jQuery.jqplot.CanvasAxisTickRenderer,
 								tickOptions: {
-									angle: -35,
-									formatString: '%d',
+									//angle: -35,
+									//formatString: '%d',
 									fontSize: '8pt',
+									formatter: function(format, value) {
+										var label = values.x.indexOf(value) - 3;
+										return label.toString();
+									}
 								}
+							/*
+							 */
 							},
 							yaxis: {
+								min: 0,
+								showTicks: false,
+								tickOptions: {
+									/*
+									formatter: function(format, value) {
+										return (value * 100).toFixed(2) + '%';
+									}
+									*/
+								}
 							}
 						},
 						canvasOverlay: {
@@ -168,7 +190,7 @@
 							objects: [
 								{ dashedVerticalLine: {
 									name: '-2std',
-									x: values.x[2],
+									x: values.x[1],
 									lineWidth: 1,
 									dashPattern: [3, 3],
 									yOffset: '0',
@@ -177,16 +199,16 @@
 								}},	
 								{ line: {
 									name: 'background',
-									start: [values.x[2], 0],
-									stop: [values.x[6], 0],
-									lineWidth: 200,
+									start: [values.x[1], 0],
+									stop: [values.x[5], 0],
+									lineWidth: 300,
 									lineCap: 'butt',
 									color: 'rgba(220, 235, 255, 0.25)',
 									shadow: false
 								}},	
 								{ dashedVerticalLine: {
 									name: '+2std',
-									x: values.x[6],
+									x: values.x[5],
 									lineWidth: 1,
 									dashPattern: [3, 3],
 									yOffset: '0',
