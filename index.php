@@ -221,7 +221,7 @@
 						<li><a href="?page=expedientes" accesskey="1">Expedientes</a></li>
 						<li><a href="?page=enlistados">Enlistados</a></li>
 						<li><a href="?page=armazones">Armazones</a></li>
-						<li><a href="?page=notas">Notas de remisión</a></li>
+						<li><a href="?page=notas">Notas</a></li>
 						<li><a href="?page=estadisticas">Estadísticas</a></li>
 						<li><a href="?page=investigaciones">Investigaciones</a></li>
 						<li><a href="?page=personal">Personal</a></li>

@@ -41,7 +41,7 @@ body {
 	background-color: #3752B1;
 	cursor: pointer;
 } input[type=search] {
-	width: 50%;
+	width: 47%;
 	padding: 10px;
 } input[required], textarea[required] {
 	border: 1px solid #ca0;
