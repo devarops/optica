@@ -29,7 +29,7 @@
 	});
 </script>
 
-<h1>Armazones</h1>
+<h1><img src="resources/img/icon-glasses.png" height="48" width="48" alt=""> Armazones</h1>
 
 <?php
 	$result = $db->query('SELECT count(id) AS num FROM frame WHERE remission_note_id IS NULL');

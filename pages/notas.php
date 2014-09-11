@@ -158,14 +158,15 @@
 </script>
 
 
-<h1>Notas de remisión</h1>
+<h1><img src="resources/img/icon-bill.png" height="48" width="48" alt=""> Notas de remisión</h1>
 
 <label for="search_kwds">Realizar búsqueda</label><br>
 <input type="search" name="search_kwds" id="search_kwds" oninput="patient_search();" tabindex="1" results="10" placeholder="Nombre(s) y/o apellido(s)">
 o
 <form action="" method="get" style="display: inline-block; width: 47%;">
 	<input type="hidden" name="page" value="notas">
-	<input type="search" name="id" id="search_id" tabindex="2" results="1" placeholder="ID de nota (Enter para buscar)" style="width: 90%;">
+	<input type="search" name="id" id="search_id" tabindex="2" results="1" placeholder="ID de nota" style="width: 75%;">
+	<input type="submit" id="btn_submit" value="Buscar nota">
 </form>
 <div id="patient_search_result" class="search result"></div>
 
