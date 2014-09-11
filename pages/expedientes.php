@@ -109,6 +109,21 @@
 	});
 
 	jQuery(document).ready(function() {
+
+		/* OD/OI reflection */
+		jQuery('.od_oi_reflection').change(function() {
+			var origin = jQuery(this).data('origin');
+			var target = jQuery(this).data('target');
+
+			if(this.checked) {
+				jQuery(target).val(jQuery(origin).val());
+				jQuery(target).prop('readonly', true);
+			} else {
+				jQuery(target).prop('readonly', false);
+			}
+		});
+
+		/* WPM chart */
 		jQuery('#lectura').bind('change', function(event) {
 			event.preventDefault();
 
@@ -368,15 +383,20 @@
 					<input type="text" name="addictions" id="addictions" placeholder="Adicciones" tabindex="18" value="<?php if(isset($record->addictions)) { echo $record->addictions; } ?>">
 				</td>
 				<td>
-					<label for="w_od">W:OD</label><br>
-					<input type="text" name="w_od" id="w_od" placeholder="       (       %       [       " tabindex="19" value="<?php if(isset($record->w_od)) { echo $record->w_od; } ?>" oninput="format_odoi('#w_od');">
+					<div class="input-group">
+						<label for="w_od">W:OD</label><br>
+						<input type="text" name="w_od" id="w_od" placeholder="       (       %       [       " tabindex="19" value="<?php if(isset($record->w_od)) { echo $record->w_od; } ?>" oninput="format_odoi('#w_od');">
+						<div class="input-addon">
+							<input type="checkbox" id="w_reflect" tabindex="19" class="od_oi_reflection" data-origin="#w_od" data-target="#w_oi">
+						</div>
+					</div>
 				</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>
 					<label for="w_oi">W:OI</label><br>
-					<input type="text" name="w_oi" id="w_oi" placeholder="       (       %       [       " tabindex="20" value="<?php if(isset($record->w_oi)) { echo $record->w_oi; } ?>" oninput="format_odoi('#w_oi');">
+					<input type="text" name="w_oi" id="w_oi" placeholder="       (       %       [       " tabindex="20" value="<?php if(isset($record->w_oi)) { echo $record->w_oi; } ?>" oninput="format_odoi('#w_oi');" style="width: 82%;">
 				</td>
 			</tr>
 
@@ -404,9 +424,15 @@
 				</tr>
 			<tr>
 				<td>
-					<label for="m_od">M:OD</label><br>
-					<input type="text" name="m_od" id="m_od" placeholder="       (       %       [       " value="<?php if(isset($record->m_od)) { echo $record->m_od; } ?>" oninput="format_odoi('#m_od');" tabindex="27">
+					<div class="input-group">
+						<label for="m_od">M:OD</label><br>
+						<input type="text" name="m_od" id="m_od" placeholder="       (       %       [       " value="<?php if(isset($record->m_od)) { echo $record->m_od; } ?>" oninput="format_odoi('#m_od');" tabindex="27">
+						<div class="input-addon">
+							<input type="checkbox" id="m_reflect" tabindex="27" class="od_oi_reflection" data-origin="#m_od" data-target="#m_oi">
+						</div>
+					</div>
 				</td>
+
 				<td>
 					<label for="j">J</label><br>
 					<input type="text" name="j" id="j" size="1" placeholder="" value="<?php if(isset($record->j)) { echo $record->j; } ?>" tabindex="29">
@@ -446,8 +472,13 @@
 					<span style="font-size: 1.5em;">20/</span><input type="text" name="cv_od" id="cv_od" size="4" placeholder="" value="<?php if(isset($record->cv_od)) { echo $record->cv_od; } ?>" tabindex="35">
 				</td>
 				<td>
-					<label for="k_od">K:OD</label><br>
-					<input type="text" name="k_od" id="k_od" size="15" placeholder="        /        x        " value="<?php if(isset($record->k_od)) { echo $record->k_od; } ?>" oninput="format_k('#k_od');" tabindex="37">
+					<div class="input-group">
+						<label for="k_od">K:OD</label><br>
+						<input type="text" name="k_od" id="k_od" size="15" placeholder="        /        x        " value="<?php if(isset($record->k_od)) { echo $record->k_od; } ?>" oninput="format_k('#k_od');" tabindex="37" style="width: 43%;">
+						<div class="input-addon">
+							<input type="checkbox" id="k_reflect" tabindex="37" class="od_oi_reflection" data-origin="#k_od" data-target="#k_oi">
+						</div>
+					</div>
 					<span><?php if(isset($record->k_od)) { echo $record->k_eval('k_od'); } ?></span>
 				</td>
 			</tr>

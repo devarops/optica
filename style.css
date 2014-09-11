@@ -26,7 +26,7 @@ body {
 	background-color: #fff;
 	border: 1px solid #aaa;
 	padding: 10px 15px;
-	box-shadow: 1px 1px 1px #ccc;
+	/*box-shadow: 1px 1px 1px #ccc;*/
 } select {
 	padding: 9px 10px;
 } input[type=submit], button {
@@ -72,6 +72,18 @@ body {
 	border-bottom: 1px dotted #ccc;
 } table.simpleborder tr:last-child {
 	border-bottom: none;
+} div.input-group {
+	position: relative;
+} div.input-group > input {
+	float: left;
+	width: 71%;
+	border-right: 0;
+} div.input-group > div.input-addon {
+	float: left;
+	margin: 2px 0;
+	padding: 10px 4px 8px 4px;
+	border: 1px solid #aaa;
+	border-left: 0;
 }
 
 #wrapper {
