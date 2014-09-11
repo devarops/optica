@@ -91,6 +91,7 @@
 		jQuery('#record').find('input').removeAttr('disabled');
 		jQuery('#record').find('textarea').removeAttr('disabled');
 		jQuery('#record').find('select').removeAttr('disabled');
+		jQuery('#record .input-group').removeClass('disabled');
 		jQuery('#btn_unlock').remove();
 		jQuery('#btn_submit').show();
 	}
@@ -276,7 +277,7 @@
 					</select>
 				</td>
 				<td>
-					<label for="birthdate">Edad</label><br>
+					<label for="birthdate">Edad actual</label><br>
 					<input type="number" name="patient[birthdate]" id="birthdate" size="5" tabindex="5" value="<?php if(isset($patient->birthdate)) { echo $patient->get_age(); } ?>">
 				</td>
 			</tr>
@@ -478,8 +479,8 @@
 						<div class="input-addon">
 							<input type="checkbox" id="k_reflect" tabindex="37" class="od_oi_reflection" data-origin="#k_od" data-target="#k_oi">
 						</div>
+						<span><?php if(isset($record->k_od)) { echo $record->k_eval('k_od'); } ?></span>
 					</div>
-					<span><?php if(isset($record->k_od)) { echo $record->k_eval('k_od'); } ?></span>
 				</td>
 			</tr>
 			<tr>
@@ -658,6 +659,7 @@
 	jQuery('#record').find('input').attr('disabled', 'disabled');
 	jQuery('#record').find('textarea').attr('disabled', 'disabled');
 	jQuery('#record').find('select').attr('disabled', 'disabled');
+	jQuery('#record .input-group').addClass('disabled');
 </script>
 
 
