@@ -153,8 +153,8 @@
 
 					var wpm_plot = jQuery.jqplot('wpm_chart', [values.zipped, [values.patient]], {
 						title: {
-							//text: 'Dist. normal PPM: ' + age + ' años',
-							//fontSize: '10pt',
+							text: 'Promedio ' + age + ' años: ' + Math.round(values.x[3]) +' PPM',
+							fontSize: '10pt',
 						},
 						series: [
 							{
@@ -174,20 +174,17 @@
 						],
 						axes: {
 							xaxis: {
-								// min = max(0, xbar - 2 std)
-								ticks: values.x,
+								ticks: [Math.max(0,values.x[0])].concat(values.x.slice(1)),
 								tickRenderer: jQuery.jqplot.CanvasAxisTickRenderer,
 								tickOptions: {
 									//angle: -35,
-									//formatString: '%d',
+									formatString: '%d',
 									fontSize: '8pt',
-									formatter: function(format, value) {
+									/*formatter: function(format, value) {
 										var label = values.x.indexOf(value) - 3;
 										return label.toString();
-									}
+									}*/
 								}
-							/*
-							 */
 							},
 							yaxis: {
 								min: 0,
