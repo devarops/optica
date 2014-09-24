@@ -23,6 +23,8 @@ body {
 } h3, legend {
 	font-size: 1.2em;
 	color: #3C77B4;
+} h4 {
+	color: rgb(60, 80, 35);
 } fieldset {
 	border: 1px solid #ccc;
 	margin: 15px 0;
@@ -96,7 +98,7 @@ body {
 }
 
 #wrapper {
-	min-width: 1000px;
+	min-width: 1080px;
 	width: 60%;
 	margin: 15px auto;
 	box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);

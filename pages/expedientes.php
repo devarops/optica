@@ -237,6 +237,13 @@
 				jQuery('#lectura-error').hide();
 			}
 
+			/* Save a chart by clicking on it */
+			/*
+			jQuery('.chart').on('click', function() {
+				jQuery(this).jqplotSaveImage();
+			});
+			*/
+
 		});
 
 		<?php if(isset($record->lectura)) { echo "jQuery('#lectura').trigger('change');"; } ?>
@@ -697,7 +704,7 @@
 					echo '</div>';
 				}
 			} else{
-				echo '<p>El paciente no cuenta con imágenes.</p>';
+				echo '<p><em>El paciente no cuenta con imágenes.</em></p>';
 			}
 		?>
 	</div>
@@ -738,12 +745,20 @@
 
 <fieldset>
 	<legend>Historial</legend>
+	<div class="history" style="width: 55%; float: left; border-right: 1px solid #ccc;">
 	<?php
 		$records = $patient->get_record_list();
+		$pio     = [];
 		if($records) {
+			//echo '<div class="history"', ($num_records >= 6 ? ' style="width: 65%; float: left; border-right: 1px solid #ccc;' : ''), '">';
 			echo '<h4>Examinaciones</h4>', PHP_EOL;
-			echo '<table class="clickable_tr"><thead><tr><th>Fecha de visita</th><th>M:OD</th><th>M:OI</th><th>Observaciones</th></tr></thead><tbody>', PHP_EOL;
+			echo '<table class="clickable_tr" style="width: 98%;"><thead><tr><th>Fecha de visita</th><th>M:OD</th><th>M:OI</th><th>Observaciones</th></tr></thead><tbody>', PHP_EOL;
 			foreach($records as $record) {
+				// Log any nonzero tonometry value
+				if($record->tonometria_od > 0 || $record->tonometria_oi > 0) {
+					$pio[] = ['od' => $record->tonometria_od, 'oi' => $record->tonometria_oi, 'ts' => $record->add_date, 'id' => $record->id];
+				}
+
 				echo '<tr onclick="document.location = \'?page=expedientes&patient_id=', $patient->id, '&record_id=', $record->id, '\'"><td>',
 					substr($record->add_date, 0, 10),
 					'</td><td>',
@@ -751,7 +766,7 @@
 					'</td><td>',
 					(strlen($record->m_oi) > 3 ? $record->m_oi : '<em>Sin datos</em>'),
 					'</td><td>',
-					(strlen($record->observaciones) > 50 ? substr($record->observaciones, 0, 50) . '...' : $record->observaciones),
+					(strlen($record->observaciones) > 25 ? substr($record->observaciones, 0, 25) . '&hellip;' : $record->observaciones),
 					'</td></tr>', PHP_EOL;
 			}
 			echo '</tbody></table>', PHP_EOL;
@@ -762,18 +777,110 @@
 		$notas = $patient->get_remission_list();
 		if($notas) {
 			echo '<h4>Notas de remision</h4>', PHP_EOL;
-			echo '<table class="clickable_tr"><thead><tr><th>Fecha</th><th>Vendedor</th><th>Proceso</th><th>Total</th><th>Observaciones</th></thead><tbody>', PHP_EOL;
+			echo '<table class="clickable_tr" style="width: 98%;"><thead><tr><th>Fecha de visita</th><th>Vendedor</th><th>Proceso</th><th>Total</th><th>Observaciones</th></thead><tbody>', PHP_EOL;
 			foreach($notas as $nota) {
 				echo '<tr onclick="document.location = \'?page=notas&id=', $nota['id'], '\'">',
 					'<td>', substr($nota['add_date'], 0, 10), '</td>',
 					'<td>', $nota['salesperson'], '</td>',
 					'<td>', $nota['process'], '</td>',
 					'<td>$', number_format($nota['total'], 2), '</td>',
-					'<td>', (strlen($nota['observations']) > 50 ? substr($nota['observations'], 0, 50) . '...' : $nota['observations']), '</td>',
+					'<td>', (strlen($nota['observations']) > 25 ? substr($nota['observations'], 0, 25) . '&hellip;' : $nota['observations']), '</td>',
 					'</tr>', PHP_EOL;
 			}
 			echo '</tbody></table>', PHP_EOL;
 		}
 	?>
+	</div>
+	
+	<?php if(sizeof($pio) >= 6) {
+		usort($pio, function($a, $b) { return $a['id'] - $b['id']; });
+	?>
+	<div class="control-iop" style="border-left: 1px solid #ccc; width: 43%; float: left; margin-left: -1px; padding-left: 10px;">
+		<h4 style="text-align: center;">Control de presión intraocular</h4>
+
+		<a id="dl_pio_od" target="_blank" href="" download="PIO OD <?php echo $patient->get_full_name(), ' ', date('Y-m-d'); ?>.png"> <!-- download="" limited browser support; works in Chrome -->
+			<div id="pio_od" class="chart" style="width: 49%; height: 150px; float: left;"></div>
+		</a>
+		<a id="dl_pio_oi" target="_blank" href="" download="PIO OI <?php echo $patient->get_full_name(), ' ', date('Y-m-d'); ?>.png">
+			<div id="pio_oi" class="chart" style="width: 49%; height: 150px; float: right;"></div>
+		</a>
+
+		<p class="small" style="clear: both; padding: 10px 0 0 0;"><em>* Haz click en el gráfico para descargarlo como imágen PNG.</em></p>
+
+		<table style="width: 100%; float: left; margin-top: 10px;">
+			<thead>
+				<tr><th>#</th><th>Fecha y hora</th><th>Presión OD</th><th>Presión OI</th></tr>
+			</thead>
+			<tbody>
+			<?php
+				$series_od = [];
+				$series_oi = [];
+				$count     = 0;
+
+				foreach($pio as $m) {
+					//echo '<tr><th>', $count+1, '</th><td>', $m['ts'], '</td><td>', $m['od'], '</td><td>', $m['oi'], '</td></tr>', PHP_EOL;
+					printf('<tr><th>%d</th><td>%s</td><td>%.2f</td><td>%.2f</td>', $count + 1, $m['ts'], $m['od'], $m['oi']);
+
+					$series_od[] = $m['od'];
+					$series_oi[] = $m['oi'];
+					$count++;
+				}	
+
+				$avg_od = array_sum($series_od) / $count;
+				$avg_oi = array_sum($series_oi) / $count;
+			?>
+			</tbody>
+		</table>
+
+		<script>
+			function piochart(target, title, data) {
+				var chart = jQuery.jqplot(target, data, {
+					title: {
+						text: title,
+						fontSize: '10pt'
+					},
+					series: [
+						{ // Average line
+							lineWidth: 1,
+							markerOptions: { show: false },
+						},
+						{ // Measurements line
+							lineWidth: 1,
+							markerOptions: { show: true, style: 'filledCircle', lineWidth: 1, size: 5 },
+						},
+					],
+					axes: {
+						xaxis: {
+							pad: 0,
+							label: '# Visita',
+							labelOptions: { fontSize: '12px' },
+							//tickRenderer: jQuery.jqplot.CanvasAxisTickRenderer,
+							ticks: [<?php echo join(', ', range(1, $count)); ?>],
+							tickOptions: {
+								formatString: '%d',
+							}
+						},
+						yaxis: {
+							label: 'Presión (mmHg)',
+							labelOptions: { fontSize: '12px' },
+							labelRenderer: jQuery.jqplot.CanvasAxisLabelRenderer,
+						}
+					}
+				});
+			}
+
+			piochart('pio_od', '<?php printf("Ojo derecho, λ=%.2f", $avg_od); ?>',   [[<?php echo join(', ', array_fill(0, $count, $avg_od)); ?>], [<?php echo join(', ', $series_od); ?>]]);
+			piochart('pio_oi', '<?php printf('Ojo izquierdo, λ=%.2f', $avg_oi); ?>', [[<?php echo join(', ', array_fill(0, $count, $avg_oi)); ?>], [<?php echo join(', ', $series_oi); ?>]]);
+
+			//var img_pio_od = jQuery('#pio_od').jqplotToImageStr({});
+			//jQuery('#pio_od').jqplotSaveImage({});
+			jQuery('#dl_pio_od').attr('href', jQuery('#pio_od').jqplotToImageStr({}));
+			jQuery('#dl_pio_oi').attr('href', jQuery('#pio_oi').jqplotToImageStr({}));
+		</script>
+
+
+		<?php //echo nl2br(print_r($pio, true)); ?>
+	</div>
 </fieldset>
-<?php } ?>
+
+<?php } } ?>
