@@ -37,6 +37,23 @@
 			return $output;
 		}
 
-		// WPM within 2 STDDEV?
+		public function getBasicStats() {
+			$output  = [];
+			$queries = [
+				'tot_patients'            => 'SELECT COUNT(id) AS tot_patients FROM patient',
+				'tot_records'             => 'SELECT COUNT(id) AS tot_records  FROM record',
+				'avg_patients_per_day'    => 'SELECT AVG(data.num_patients) AS avg_patients_per_day FROM (SELECT COUNT(id) AS num_patients FROM patient GROUP BY DATE(add_date)) AS data',
+				'avg_records_per_day'     => 'SELECT AVG(data.num_records) AS avg_records_per_day FROM (SELECT COUNT(id) AS num_records FROM record GROUP BY DATE(add_date)) AS data',
+				'avg_records_per_patient' => 'SELECT AVG(data.num_records) AS avg_records_per_patient FROM (SELECT COUNT(r.id) AS num_records FROM patient AS p, record AS r WHERE r.patient_id = p.id GROUP BY p.id) AS data',
+			];
+
+			foreach($queries as $key => $query) {
+				$result       = $this->db->query($query);
+				$row          = $result->fetch(PDO::FETCH_ASSOC);
+				$output[$key] = $row[$key];
+			}
+
+			return $output;
+		}
 	}
 ?>
