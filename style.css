@@ -204,6 +204,15 @@ ul#mainmenu {
 } tr.unavailable td {
 	color: #aaa;
 	font-style: italic;
+} .fb-grid {
+	display: flex;
+} .fb-grid > div {
+	flex: 0 0 45%;
+	margin: 5px;
+} .fb-grid > div.box {
+	padding: 15px;
+	border-radius: 8px;
+	border: 1px solid #f7f7f7;
 }
 
 /* Notifications */
