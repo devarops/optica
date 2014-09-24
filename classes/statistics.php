@@ -37,6 +37,7 @@
 			return $output;
 		}
 
+
 		public function getBasicStats() {
 			$output  = [];
 			$queries = [
@@ -51,6 +52,25 @@
 				$result       = $this->db->query($query);
 				$row          = $result->fetch(PDO::FETCH_ASSOC);
 				$output[$key] = $row[$key];
+			}
+
+			return $output;
+		}
+
+
+		public function getTonometryStats() {
+			$output  = ['od' => [], 'oi' => []];
+
+			$queries = [
+				'od' => 'SELECT tonometria_od AS t_od, COUNT(tonometria_od) AS num FROM record WHERE tonometria_od > 0 GROUP BY tonometria_od',
+				'oi' => 'SELECT tonometria_oi AS t_oi, COUNT(tonometria_oi) AS num FROM record WHERE tonometria_oi > 0 GROUP BY tonometria_oi'
+			];
+
+			foreach($queries as $key => $query) {
+				$result = $this->db->query($query);
+				while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+					$output[$key][] = [$row['t_' . $key], $row['num']];
+				}
 			}
 
 			return $output;
