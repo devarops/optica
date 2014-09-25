@@ -126,7 +126,6 @@
 		// Remission notes
 		// ---------------
 		if(isset($_POST['btn_nota'])) {
-			echo nl2br(print_r($_POST, true));
 			if(!isset($_POST['patient_id']) || !is_numeric($_POST['patient_id'])) {
 				$message = array('<p><strong>Error:</strong> Hace falta eligír un paciente.</p>', 'error');
 			} else if(!isset($_POST['salesperson_id']) || !is_numeric($_POST['salesperson_id'])) {
@@ -157,8 +156,10 @@
 					$rn->handle_products($products);
 				}
 
-				if($rn->save()) {
+				$new_id = $rn->save();
+				if($new_id) {
 					$message = array('<p>Los datos fueron almacenados exitosamente!</p>', 'success');
+					$_GET['id'] = $new_id; // Hack to properly load everything 
 				}
 			}
 		}

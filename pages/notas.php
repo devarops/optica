@@ -48,7 +48,7 @@
 		var available_lenses = [<?php echo substr($lenses, 0, -2); ?>];
 		var available_frames = [<?php echo substr($frames, 0, -2); ?>];
 		var available_salespeople = [<?php echo substr($salespeople, 0, -2); ?>];
-		var available_process = [<?php echo substr($process, 0, -2); ?>];
+		//var available_process = [<?php echo substr($process, 0, -2); ?>];
 		var selected_frames = [];
 
 		// Check that salesperson field is filled in
@@ -74,7 +74,7 @@
 		//jQuery('#salesperson').autocomplete({ source: available_salespeople });
 
 		// Process autocomplete
-		jQuery('#process').autocomplete({ source: available_process });
+		//jQuery('#process').autocomplete({ source: available_process });
 
 		// Product type change
 		jQuery('select.item_type').change(function() {
@@ -239,7 +239,7 @@ o
 				<tr>
 					<td><select name="item_type[]" class="item_type"><option selected disabled>&ndash;</option><option value="lens">Lente</option><option value="frame">Armazón</option><option value="other">Otro</option></select></td>
 					<td class="iname"><input type="text" name="item_name[]" class="item_name" placeholder="Producto" style="width: 80%;" readonly="readonly"><input type="hidden" name="item_id[]" class="item_id" value=""></td>
-					<td class="iprice"><input type="number" name="item_price[]" class="product_price" placeholder="Precio" min="0" step="any" readonly="readonly"></td>
+					<td class="iprice"><input type="number" name="item_price[]" class="product_price" placeholder="Precio" step="any" readonly="readonly"></td>
 					<td><a class="rem_product" title="Borrar renglón" style="display: inline-block; cursor: pointer; margin: 60% 0 0 0;"><img src="resources/img/icon-delete.png" height="16" width="16" alt="Borrar renglón"></a></td>
 				</tr>
 			</tbody>
@@ -268,7 +268,7 @@ o
 					<td colspan="2">
 						<label for="salesperson">Vendedor</label><br>
 						<!--<input type="text" name="salesperson" id="salesperson" placeholder="Vendedor" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->salesperson, '" disabled="disabled"'; } ?>>-->
-						<select name="salesperson_id" id="salesperson" placeholder="Vendedor" style="width: 90%;">
+						<select name="salesperson_id" id="salesperson" placeholder="Vendedor" style="width: 90%;" <?php if(isset($rn)) { echo ' disabled="disabled"'; } ?>>
 							<option>Vendedor</option>
 							<?php
 								foreach(Employee::getEmployees($db) as $employee) {
@@ -279,7 +279,14 @@ o
 					</td>
 					<td colspan="2">
 						<label for="process">Proceso</label><br>
-						<input type="text" name="process" id="process" style="width: 90%;" placeholder="<?php echo (isset($rn) ? $rn->process : 'Proceso'); ?>" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->process, '"'; } ?>>
+						<select name="process" id="process" style="width: 100%;">
+							<option selected disabled>&ndash;</option>
+							<option value="APARTADOS">APARTADOS</option>
+							<option value="VENDIDOS">VENDIDOS</option>
+							<option value="ENTREGADOS">ENTREGADOS</option>
+							<option value="DONADOS">DONADOS</option>
+						</select>
+						<!--<input type="text" name="process" id="process" style="width: 90%;" placeholder="<?php echo (isset($rn) ? $rn->process : 'Proceso'); ?>" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->process, '"'; } ?>>-->
 					</td>
 				</tr>
 				<t>
