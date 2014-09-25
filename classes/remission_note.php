@@ -5,6 +5,7 @@
 		public function __construct($db, $id=0) {
 			$this->db = $db;
 			$this->misc_products_prices = '';
+			$this->commission_rate = 0.03;
 
 			if($id > 0) {
 				$this->id = $id;
@@ -29,8 +30,9 @@
 			foreach($products as $key => $category) {
 				if($key != 'frame') {
 					foreach($products[$key] as $item) {
-						$this->misc_products_prices .= $item['name'] . '@' . $item['price'] . '|';
+						$this->misc_products_prices .= $item['name'] . '@' . $item['price'] . '|'; // No lens validity check atm
 
+						/* DEPRECATED
 						if($key == 'lens') {
 							// Check if this lens is already in the database; if not, add it
 							$result = $this->db->query("SELECT id FROM lens WHERE name = '" . $item['name'] . "'");
@@ -40,7 +42,7 @@
 								$stmt->bindParam(':price', $item['price']);
 								$stmt->execute();
 							}
-						}
+						} */
 					}
 				}
 			}
@@ -74,14 +76,17 @@
 			$this->validate();
 
 			if($this->id == 0) {
-				$stmt = $this->db->prepare("INSERT INTO remission_note (add_date, patient_id, down_payment, process, salesperson, observations, total, misc_products_prices) VALUES (:add_date, :patient_id, :down_payment, :process, :salesperson, :observations, :total, :misc_products_prices)");
+				$stmt = $this->db->prepare("INSERT INTO remission_note (add_date, patient_id, down_payment, process, salesperson_id, observations, total, misc_products_prices, commission) VALUES (:add_date, :patient_id, :down_payment, :process, :salesperson_id, :observations, :total, :misc_products_prices, :commission)");
 				$stmt->bindParam(':add_date', $this->add_date);
 				$stmt->bindParam(':patient_id', $this->patient_id);
 				$stmt->bindParam(':down_payment', $this->down_payment);
-				$stmt->bindParam(':salesperson', $this->salesperson);
+				$stmt->bindParam(':salesperson_id', $this->salesperson_id);
 				$stmt->bindParam(':observations', $this->observations);
 				$stmt->bindParam(':total', $this->total);
 				$stmt->bindParam(':misc_products_prices', $this->misc_products_prices);
+
+				$commission = $this->total * $this->commission_rate; // Can't calculate this within bindParam for some reason
+				$stmt->bindParam(':commission', $commission);
 			} else {
 				$stmt = $this->db->prepare("UPDATE remission_note SET process = :process WHERE id = :id");
 				$stmt->bindParam(':id', $this->id);
