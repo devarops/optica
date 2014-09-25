@@ -51,6 +51,14 @@
 		var available_process = [<?php echo substr($process, 0, -2); ?>];
 		var selected_frames = [];
 
+		// Check that salesperson field is filled in
+		jQuery('#btn_nota').click(function(event) {
+			if(!jQuery('#salesperson').val()) {
+				event.preventDefault();
+				alert('Hace falta eligír un vendedor.');
+			}
+		});
+
 		// Product row removal
 		jQuery('#product_list tbody tr a.rem_product').click(function() {
 			if(jQuery('#product_list tbody tr').length > 1) {
@@ -63,7 +71,7 @@
 		});
 
 		// Salesperson autocomplete
-		jQuery('#salesperson').autocomplete({ source: available_salespeople });
+		//jQuery('#salesperson').autocomplete({ source: available_salespeople });
 
 		// Process autocomplete
 		jQuery('#process').autocomplete({ source: available_process });
@@ -77,6 +85,8 @@
 			jQuery(item_id_field).val('');
 			jQuery(next_elem).removeClass('lens frame other');
 			jQuery(next_elem).addClass(type);
+			jQuery('.item_name').prop('readonly', false);
+			jQuery('.product_price').prop('readonly', false);
 
 			if(type == 'lens') {
 				jQuery('.lens').autocomplete({ source: available_lenses, select: function(event, ui) {
@@ -104,9 +114,17 @@
 		jQuery('body').on('change', '.item_name', function() {
 
 			if(jQuery(this).hasClass('frame')) {
-				frame_id = jQuery(this).val();
+				var frame_id = jQuery(this).val();
 				if(available_frames.indexOf(frame_id) == -1) {
-					errormsg = jQuery('<p class="small error">El armazón ' + jQuery(this).val() + ' no existe o ya fue vendido.</p>').delay('4000').fadeOut();
+					var errormsg = jQuery('<p class="small error">El armazón ' + jQuery(this).val() + ' no existe o ya fue vendido.</p>').delay('4000').fadeOut();
+					jQuery(this).parent().append(errormsg);
+					jQuery(this).val('');
+					jQuery(this).parent().siblings('.iprice').children('input[type=number]').val('').change();
+				}
+			} else if(jQuery(this).hasClass('lens')) {
+				var lens = jQuery(this).val();
+				if(available_lenses.indexOf(lens) == -1) {
+					var errormsg = jQuery('<p class="small error">El lente ' + lens + ' no existe.</p>').delay('4000').fadeOut();
 					jQuery(this).parent().append(errormsg);
 					jQuery(this).val('');
 					jQuery(this).parent().siblings('.iprice').children('input[type=number]').val('').change();
@@ -157,7 +175,7 @@
 	function add_product_row() {
 		new_row = jQuery('#product_list tbody > tr:last').clone(true);
 		jQuery(new_row).children('.iname').children().remove();
-		jQuery(new_row).children('.iname').append('<input type="text" name=item_name[]" class="item_name" placeholder="Producto" style="width: 80%;"><input type="hidden" name="item_id[]" class="item_id">');
+		jQuery(new_row).children('.iname').append('<input type="text" name=item_name[]" class="item_name" placeholder="Producto" readonly="readonly" style="width: 80%;"><input type="hidden" name="item_id[]" class="item_id">');
 		new_row.insertAfter('#product_list tbody > tr:last');
 		jQuery('#product_list tbody > tr:last input').val('');
 	}
@@ -219,9 +237,9 @@ o
 ?>
 			<tbody>
 				<tr>
-					<td><select name="item_type[]" class="item_type"><option value="lens">Lente</option><option value="frame">Armazón</option><option selected value="other">Otro</option></select></td>
-					<td class="iname"><input type="text" name="item_name[]" class="item_name" placeholder="Producto" style="width: 80%;"><input type="hidden" name="item_id[]" class="item_id" value=""></td>
-					<td class="iprice"><input type="number" name="item_price[]" class="product_price" placeholder="Precio" min="0" step="any"></td>
+					<td><select name="item_type[]" class="item_type"><option selected disabled>&ndash;</option><option value="lens">Lente</option><option value="frame">Armazón</option><option value="other">Otro</option></select></td>
+					<td class="iname"><input type="text" name="item_name[]" class="item_name" placeholder="Producto" style="width: 80%;" readonly="readonly"><input type="hidden" name="item_id[]" class="item_id" value=""></td>
+					<td class="iprice"><input type="number" name="item_price[]" class="product_price" placeholder="Precio" min="0" step="any" readonly="readonly"></td>
 					<td><a class="rem_product" title="Borrar renglón" style="display: inline-block; cursor: pointer; margin: 60% 0 0 0;"><img src="resources/img/icon-delete.png" height="16" width="16" alt="Borrar renglón"></a></td>
 				</tr>
 			</tbody>
@@ -251,10 +269,10 @@ o
 						<label for="salesperson">Vendedor</label><br>
 						<!--<input type="text" name="salesperson" id="salesperson" placeholder="Vendedor" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->salesperson, '" disabled="disabled"'; } ?>>-->
 						<select name="salesperson_id" id="salesperson" placeholder="Vendedor" style="width: 90%;">
-							<option selected disabled>Vendedor</option>
+							<option>Vendedor</option>
 							<?php
 								foreach(Employee::getEmployees($db) as $employee) {
-									echo '<option value="' . $employee['id'] . '">' . $employee['name'] . '</option>' . PHP_EOL;
+									echo '<option value="', $employee['id'], '"', (isset($rn) && $rn->salesperson_id == $employee['id'] ? ' selected' : '')  , '>' . $employee['name'] . '</option>' . PHP_EOL;
 								}
 							?>
 						</select>
@@ -267,7 +285,7 @@ o
 				<t>
 					<td colspan="2">
 						<label for="commission">Comisión</label><br>
-						<input type="text" id="commission" name="commission" placeholder="Comisión" style="width: 78%;" disabled="disabled">
+						<input type="text" id="commission" name="commission" placeholder="Comisión" style="width: 78%;" disabled="disabled" value="<?php echo (isset($rn) ? $rn->commission : ''); ?>">
 					</td>
 					<td colspan="2">
 						<label for="observations">Observaciones</label><br>

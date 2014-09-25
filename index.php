@@ -126,6 +126,7 @@
 		// Remission notes
 		// ---------------
 		if(isset($_POST['btn_nota'])) {
+			echo nl2br(print_r($_POST, true));
 			if(!isset($_POST['patient_id']) || !is_numeric($_POST['patient_id'])) {
 				$message = array('<p><strong>Error:</strong> Hace falta eligír un paciente.</p>', 'error');
 			} else if(!isset($_POST['salesperson_id']) || !is_numeric($_POST['salesperson_id'])) {
@@ -134,9 +135,8 @@
 				$rn = new RemissionNote($db, (isset($_POST['remission_note_id']) ? $_POST['remission_note_id'] : 0));
 				unset($_POST['btn_nota']);
 				foreach($_POST as $key => $value) {
-					if(!is_array($value)) {
-						$rn->$key = ucfirst($value);
-					}
+					//if($key == 'item_name') { break; }
+					$rn->$key = $value;
 				}
 
 				// Format the product arrays (first if just to avoid unnecessary processing during updates)
