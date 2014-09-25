@@ -62,7 +62,7 @@
 		};
 
 		// http://www.jqplot.com/deploy/dist/examples/bandedLine.html
-		plot1 = $.jqplot('avg_wpm_chart', [avg_wpm], $.extend(true, {}, theme, {
+		var plot1 = $.jqplot('avg_wpm_chart', [avg_wpm], $.extend(true, {}, theme, {
 			title:'Promedio de palabras por minuto',
 	        series: [{
 	            rendererOptions: {
@@ -77,38 +77,59 @@
 	    }));
 
 <?php
-	/*
-		$('#avg_wpm_chart').jqplot([avg_wpm], {
-			title:'Promedio de palabras por minuto',
-			seriesDefaults:{
-				renderer:$.jqplot.BarRenderer,
+	$data = $statistics->getTonometryHistogram(10);
+
+	echo 'var data_od = [', join(', ', $data['od']), '];', PHP_EOL;
+	echo 'var data_oi = [', join(', ', $data['oi']), '];', PHP_EOL;
+?>
+
+		var tplot = jQuery.jqplot('tonometry_chart', [data_od, data_oi], {
+			title: 'Histograma de tonometría',
+		
+			grid: {
+				drawBorder: false,
+				shadow:     false,
+				background: 'rgba(255, 255, 255, 0.0)'
+			},
+
+			seriesDefaults: {
+				shadow: false,
+				renderer: jQuery.jqplot.BarRenderer,
 				rendererOptions: {
-					varyBarColor: false,
-					barDirection: "vertical",
+					barWidth: 12,
+					barPadding: 0,
 				},
 			},
-			axes:{
+
+			series: [
+				{ label: 'Ojo derecho' },
+				{ label: 'Ojo izquierdo' },
+			],
+
+			axes: {
 				xaxis: {
-					renderer: $.jqplot.CategoryAxisRenderer,
-					label: 'Edad (años)',
+					label: 'Presión intraocular (agrupado)',
 					labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+					ticks: [<?php echo join(', ', array_map('round', $data['ticks'])); ?>],
+					renderer: jQuery.jqplot.CategoryAxisRenderer,
+					/*
+					ticks: [<?php //echo join(', ', $data['ticks']); ?>],
+					tickOptions: {
+						formatString: '%.1f',
+					},
+					 */
 				},
 				yaxis: {
-					label: 'Lectura (ppm)',
+					label: 'Número de observaciones',
 					labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-					tickOptions:{
-						formatString:'%.2f'
-					}
 				}
 			},
-			highlighter: {
+
+			legend: {
 				show: true,
-				tooltipAxes: 'y',
-				sizeAdjust: 15.5,
-			},
+				location: 'ne',
+			}
 		});
-	*/
-?>
 	});
 </script>
 
@@ -131,9 +152,8 @@
 	<div id="avg_wpm_chart" class="chart" style="height: 300px;"></div>
 </div>
 <div class="fb-grid">
-	<div class="box">
-		Histograma tonometría
-	</div>
+	<div id="tonometry_chart" class="chart" style="height: 300px;"></div>
+
 	<div class="box">
 		Promedio tonometría por investigación
 	</div>
