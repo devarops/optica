@@ -76,6 +76,8 @@ body {
 	border-bottom: 1px dotted #ccc;
 } table.simpleborder tr:last-child {
 	border-bottom: none;
+} table.jqplot-table-legend {
+	width: inherit;
 } div.input-group {
 	position: relative;
 } div.input-group > input {

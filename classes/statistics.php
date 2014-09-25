@@ -58,18 +58,31 @@
 		}
 
 
-		public function getTonometryStats() {
-			$output  = ['od' => [], 'oi' => []];
+		public function getTonometryHistogram($bars = 10) {
+
+			// Find the smallest (nonzero) and largest tonometry value, from either OD or OI; use these values to set the step value based on $bars
+			$result  = $this->db->query('SELECT LEAST(t.min_od, t.min_oi) AS min, GREATEST(t.max_od, t.max_oi) AS max FROM (SELECT MIN(NULLIF(tonometria_od, 0)) AS min_od, MIN(NULLIF(tonometria_oi, 0)) AS min_oi, MAX(tonometria_od) AS max_od, MAX(tonometria_oi) AS max_oi FROM record) AS t');
+			$row     = $result->fetch(PDO::FETCH_ASSOC);
+			$step    = ($row['max'] - $row['min']) / $bars;
+
+			$output  = [
+				'od'    => array_fill(0, $bars, 0),
+				'oi'    => array_fill(0, $bars, 0),
+				'min'   => $row['min'],
+				'max'   => $row['max'],
+				'ticks' => range($row['min'], $row['max'], $step),
+			];
 
 			$queries = [
-				'od' => 'SELECT tonometria_od AS t_od, COUNT(tonometria_od) AS num FROM record WHERE tonometria_od > 0 GROUP BY tonometria_od',
-				'oi' => 'SELECT tonometria_oi AS t_oi, COUNT(tonometria_oi) AS num FROM record WHERE tonometria_oi > 0 GROUP BY tonometria_oi'
+				'od' => 'SELECT tonometria_od AS t_od, COUNT(tonometria_od) AS num FROM record WHERE tonometria_od > 0 GROUP BY ROUND(tonometria_od / ' . $step . ')',
+				'oi' => 'SELECT tonometria_oi AS t_oi, COUNT(tonometria_oi) AS num FROM record WHERE tonometria_oi > 0 GROUP BY ROUND(tonometria_oi / ' . $step . ')'
 			];
 
 			foreach($queries as $key => $query) {
 				$result = $this->db->query($query);
 				while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-					$output[$key][] = [$row['t_' . $key], $row['num']];
+					$idx = round(($row['t_' . $key] - $output['min']) / $step);
+					$output[$key][$idx] = $row['num'];
 				}
 			}
 
