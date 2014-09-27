@@ -299,7 +299,7 @@ o
 				<tr>
 					<td colspan="2">
 						<label for="commission">Comisión</label><br>
-						<input type="text" id="commission" name="commission" placeholder="Comisión" style="width: 78%;" disabled="disabled" value="<?php echo (isset($rn) ? $rn->commission : ''); ?>">
+						<input type="text" id="commission" name="commission" placeholder="Comisión" style="width: 78%;" disabled="disabled" value="<?php echo (isset($rn) ? number_format($rn->commission, 2) : ''); ?>">
 					</td>
 					<td colspan="2">
 						<label for="observations">Observaciones</label><br>
