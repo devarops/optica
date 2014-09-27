@@ -149,12 +149,30 @@
 		</table>
 	</div>
 
-	<div id="avg_wpm_chart" class="chart" style="height: 300px;"></div>
+	<div class="box">
+		<div id="avg_wpm_chart" class="chart" style="height: 300px;"></div>
+	</div>
 </div>
 <div class="fb-grid">
-	<div id="tonometry_chart" class="chart" style="height: 300px;"></div>
+	<div class="box">
+		<div id="tonometry_chart" class="chart" style="height: 300px;"></div>
+	</div>
 
 	<div class="box">
-		Promedio tonometría por investigación
+		<h3>Estadísticas de tonometría por investigación</h3>
+		<table class="noeffects">
+			<tbody>
+			<?php
+				foreach(Investigation::get_all_investigations($db) as $investigation) {
+					$participants = $investigation->get_participants(True);
+					$stats = $statistics->getTonometryStats($participants);
+					echo '<tr><th colspan="2" style="font-size: 0.95em;">', $investigation->title, '</th></tr>', PHP_EOL;
+					echo '<tr><td>Participantes</td><td>', sizeof($participants), '</td></tr>', PHP_EOL;
+					echo '<tr><td>Promedio</td><td>', number_format($stats['avg'], 2), '</td></tr>', PHP_EOL;
+					echo '<tr><td>Intervalo normal</td><td>', number_format($stats['avg'] - 2 * $stats['stdev'], 2), '&mdash;', number_format($stats['avg'] + 2 * $stats['stdev'], 2), '</td></tr>', PHP_EOL;
+				}
+			?>
+			</tbody>
+		</table>
 	</div>
 </div>

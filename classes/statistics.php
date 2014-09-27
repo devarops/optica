@@ -88,5 +88,16 @@
 
 			return $output;
 		}
+
+
+		public function getTonometryStats($pop_ids) {
+			// Should we use population or sample stddev? (STD or STDDEV_SAMP)
+			$qt       = '(SELECT %s AS tonometria FROM record WHERE %s > 0 AND patient_id IN (%s))';
+			$pl       = join(',', $pop_ids);
+			$subquery = sprintf($qt, 'tonometria_od', 'tonometria_od', $pl) . ' UNION ALL ' . sprintf($qt, 'tonometria_oi', 'tonometria_oi', $pl);
+			$row      = $this->db->query('SELECT AVG(tonometria) AS avg, STD(tonometria) AS stdev FROM (' . $subquery . ') AS t')->fetch(PDO::FETCH_ASSOC);
+
+			return ['avg' => $row['avg'], 'stdev' => $row['stdev']];
+		}
 	}
 ?>

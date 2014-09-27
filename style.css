@@ -77,7 +77,10 @@ body {
 } table.simpleborder tr:last-child {
 	border-bottom: none;
 } table.jqplot-table-legend {
+	background-color: #fff;
 	width: inherit;
+} table.jqplot-table-legend tr:nth-child(even) {
+	background-color: #fff;
 } div.input-group {
 	position: relative;
 } div.input-group > input {
@@ -214,11 +217,13 @@ ul#mainmenu {
 	display: flex;
 } .fb-grid > div {
 	flex: 0 0 45%;
-	margin: 5px;
+	margin: 3px;
 } .fb-grid > div.box {
 	padding: 15px;
-	border-radius: 8px;
+	border-radius: 3px;
 	border: 1px solid #f7f7f7;
+} .fb-grid > div.box h3 {
+	margin-top: 0;
 }
 
 /* Notifications */
