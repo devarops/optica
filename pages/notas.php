@@ -260,7 +260,9 @@ o
 				</tr>
 				<tr>
 					<th colspan="3" style="text-align: right;">Saldo</th>
-					<td style="text-align: right; width: 150px;">$<span id="total"><?php echo (isset($rn) ? number_format(($subtotal - $rn->down_payment), 2) : '00.00'); ?></span><input type="hidden" id="total_hidden" name="total" value="<?php echo (isset($rn) ? ($subtotal - $rn->down_payment) : 0); ?>"></td>
+					<td style="text-align: right; width: 150px;">
+						$<span id="total"><?php echo (isset($rn) ? number_format(($subtotal - $rn->down_payment), 2) : '00.00'); ?></span>
+						<input type="hidden" id="total_hidden" name="total" value="<?php echo (isset($rn) ? ($subtotal - $rn->down_payment) : 0); ?>"></td>
 				</tr>
 				<tr><td><br></td></tr>
 
@@ -281,15 +283,15 @@ o
 						<label for="process">Proceso</label><br>
 						<select name="process" id="process" style="width: 100%;">
 							<option selected disabled>&ndash;</option>
-							<option value="APARTADOS">APARTADOS</option>
-							<option value="VENDIDOS">VENDIDOS</option>
-							<option value="ENTREGADOS">ENTREGADOS</option>
-							<option value="DONADOS">DONADOS</option>
+							<?php
+								foreach(['APARTADOS', 'VENDIDOS', 'ENTREGADOS', 'DONADOS'] as $opt) {
+									echo '<option value="', $opt, '"', (isset($rn) && $rn->process == $opt ? ' selected' : ''), '>', $opt, '</option>', PHP_EOL;
+								}
+							?>
 						</select>
-						<!--<input type="text" name="process" id="process" style="width: 90%;" placeholder="<?php echo (isset($rn) ? $rn->process : 'Proceso'); ?>" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->process, '"'; } ?>>-->
 					</td>
 				</tr>
-				<t>
+				<tr>
 					<td colspan="2">
 						<label for="commission">Comisión</label><br>
 						<input type="text" id="commission" name="commission" placeholder="Comisión" style="width: 78%;" disabled="disabled" value="<?php echo (isset($rn) ? $rn->commission : ''); ?>">
