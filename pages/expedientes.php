@@ -832,7 +832,6 @@
 				$count     = 0;
 
 				foreach($pio as $m) {
-					//echo '<tr><th>', $count+1, '</th><td>', $m['ts'], '</td><td>', $m['od'], '</td><td>', $m['oi'], '</td></tr>', PHP_EOL;
 					printf('<tr><th>%d</th><td>%s</td><td>%.2f</td><td>%.2f</td>', $count + 1, $m['ts'], $m['od'], $m['oi']);
 
 					$series_od[] = $m['od'];
@@ -875,9 +874,14 @@
 							}
 						},
 						yaxis: {
+							min: <?php $min = min(min($series_od), min($series_oi)); echo round($min *= 0.9, 1); ?>,
+							max: <?php $max = max(max($series_od), max($series_oi)); echo round($max *= 1.1, 1); ?>,
 							label: 'Presión (mmHg)',
 							labelOptions: { fontSize: '12px' },
 							labelRenderer: jQuery.jqplot.CanvasAxisLabelRenderer,
+							tickOptions: {
+								formatString: '%.2f'
+							}
 						}
 					}
 				});
