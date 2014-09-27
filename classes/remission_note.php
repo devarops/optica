@@ -31,18 +31,6 @@
 				if($key != 'frame') {
 					foreach($products[$key] as $item) {
 						$this->misc_products_prices .= $item['name'] . '@' . $item['price'] . '|'; // No lens validity check atm
-
-						/* DEPRECATED
-						if($key == 'lens') {
-							// Check if this lens is already in the database; if not, add it
-							$result = $this->db->query("SELECT id FROM lens WHERE name = '" . $item['name'] . "'");
-							if(!$result->rowCount()) {
-								$stmt = $this->db->prepare("INSERT INTO lens (name, default_price) VALUES (:name, :price)");
-								$stmt->bindParam(':name', $item['name']);
-								$stmt->bindParam(':price', $item['price']);
-								$stmt->execute();
-							}
-						} */
 					}
 				}
 			}
@@ -85,7 +73,9 @@
 				$stmt->bindParam(':total', $this->total);
 				$stmt->bindParam(':misc_products_prices', $this->misc_products_prices);
 
-				$commission = $this->total * $this->commission_rate; // Can't calculate this within bindParam for some reason
+				// Important note, total is actually the REAL total MINUS the down payment... Bad
+				// In a future update of the remission note system (including proper connection tables for lenses and other products), this should be attended
+				$commission = ($this->total + $this->down_payment) * $this->commission_rate; // Can't calculate this within bindParam for some reason
 				$stmt->bindParam(':commission', $commission);
 			} else {
 				$stmt = $this->db->prepare("UPDATE remission_note SET process = :process WHERE id = :id");
