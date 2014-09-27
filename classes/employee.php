@@ -27,9 +27,9 @@
 			$this->validate();
 
 			if($this->id == 0) {
-				$stmt = $this->db->prepare("INSERT INTO investigation");
+				$stmt = $this->db->prepare("INSERT INTO user");
 			} else {
-				$stmt = $this->db->prepare("UPDATE investigation SET");
+				$stmt = $this->db->prepare("UPDATE user SET   WHERE id = :id");
 				$stmt->bindParam(':id', $this->id);
 			}
 
@@ -49,6 +49,14 @@
 
 		public function validate() {
 			return true;
+		}
+
+		public function checkPassword($candidate) {
+			$result = $this->db->query("SELECT id FROM user WHERE password=md5('" . $candidate . "') AND id = " . $this->id);
+			if($result->fetchColumn() > 0) {
+				return True;
+			}
+			return False;
 		}
 
 		public static function getEmployees($db) {
