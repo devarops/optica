@@ -147,5 +147,35 @@
 
 			return $images;
 		}
+
+		public function merge($target) {
+			// Review the target profile, fill in any blank fields that exist in this profile
+			$altered = False;
+			foreach(['address', 'phone', 'birthdate', 'is_flagged'] as $field) {
+				if(empty($target->$field) && !empty($this->$field)) {
+					echo 'Copying ', $field, ': ', $this->$field, '<br>';
+					$target->$field = $this->$field;
+					$altered = True;
+				}
+			}
+
+			// Comments, if any, should be concatenated
+			if(!empty($this->comments)) {
+				$target->comments = $this->comments . PHP_EOL . PHP_EOL . $target->comments;
+				$altered = True;
+			}
+
+			if($altered) {
+				$target->save();
+			}
+
+			// Transfer records, remission notes, images, and investigations to the target
+			foreach(['record', 'ct_patient_investigation', 'image', 'remission_note'] as $table_name) {
+				$this->db->query('UPDATE ' . $table_name . ' SET patient_id = ' . $target->id . ' WHERE patient_id = ' . $this->id);
+			}	
+			
+			// Mark this record as merged with the target
+			$this->db->query('UPDATE patient SET merged_with = ' . $target->id . ' WHERE id = ' . $this->id);
+		}
 	}
 ?>

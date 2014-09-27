@@ -203,6 +203,10 @@ ul#mainmenu {
 	background-color: rgb(110, 145, 60);
 } input[type=submit].green:hover, button.green:hover {
 	background-color: rgb(80, 105, 40);
+} input[type=submit].green, button.yellow {
+	background-color: rgb(110, 115, 40);
+} input[type=submit].green:hover, button.yellow:hover {
+	background-color: rgb(80, 75, 20);
 } tr.unavailable td {
 	color: #aaa;
 	font-style: italic;
