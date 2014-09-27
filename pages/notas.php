@@ -51,6 +51,11 @@
 		//var available_process = [<?php echo substr($process, 0, -2); ?>];
 		var selected_frames = [];
 
+		// If no patient is selected, disable all fields...
+		if(!jQuery('#patient_id').val()) {
+			jQuery('#frn input, #frn select, #frn button').prop('disabled', true);
+		}
+
 		// Check that salesperson field is filled in
 		jQuery('#btn_nota').click(function(event) {
 			if(!jQuery('#salesperson').val()) {
@@ -195,7 +200,7 @@ o
 </form>
 <div id="patient_search_result" class="search result"></div>
 
-<form action="" method="post">
+<form action="" method="post" id="frn">
 	<fieldset id="nota_remision">
 		<legend><?php echo (!isset($rn) ? 'Añadir nota de remisión' : '#' . $rn->id . ' &mdash; Nota de remisión, ' . substr($rn->add_date, 0, 10)); ?></legend>
 		<table class="noeffects" style="width: 600px;">
@@ -271,7 +276,7 @@ o
 						<label for="salesperson">Vendedor</label><br>
 						<!--<input type="text" name="salesperson" id="salesperson" placeholder="Vendedor" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->salesperson, '" disabled="disabled"'; } ?>>-->
 						<select name="salesperson_id" id="salesperson" placeholder="Vendedor" style="width: 90%;" <?php if(isset($rn)) { echo ' disabled="disabled"'; } ?>>
-							<option>Vendedor</option>
+							<option selected disabled>Vendedor</option>
 							<?php
 								foreach(Employee::getEmployees($db) as $employee) {
 									echo '<option value="', $employee['id'], '"', (isset($rn) && $rn->salesperson_id == $employee['id'] ? ' selected' : '')  , '>' . $employee['name'] . '</option>' . PHP_EOL;
