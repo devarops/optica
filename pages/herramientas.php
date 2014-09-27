@@ -6,6 +6,10 @@
 <h1><img src="resources/img/icon-settings.png" height="48" width="48" alt=""> Herramientas administrativas</h1>
 
 
+<h2>Fusionar pacientes</h2>
+
+<p>Add button on patient record, store in session, list here to perform merger.</p>
+
 
 
 
