@@ -56,11 +56,15 @@
 			return true;
 		}
 
-		public function get_participants() {
+		public function get_participants($id_only = False) {
 			$participants = array();
 			$result = $this->db->query("SELECT p.id, p.firstname, p.lastname, p.gender, p.birthdate FROM patient AS p, ct_patient_investigation AS ct WHERE p.id=ct.patient_id AND ct.investigation_id=" . $this->id);
 			while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-				$participants[] = $row;
+				if($id_only) {
+					$participants[] = $row['id'];
+				} else {
+					$participants[] = $row;
+				}
 			}
 			return $participants;
 		}
