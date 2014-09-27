@@ -316,9 +316,7 @@
 			<tr>
 				<td colspan="2">
 					<label for="comments">Comentarios</label><br>
-					<textarea name="patient[comments]" id="comments" style="width: 88%;" tabindex="8" placeholder="Notas sobre el paciente">
-						<?php if(isset($patient->comments)) { echo $patient->comments; } ?>
-					</textarea>
+					<textarea name="patient[comments]" id="comments" style="width: 88%; height: 100px;" tabindex="8" placeholder="Notas sobre el paciente"><?php if(isset($patient->comments)) { echo $patient->comments; } ?></textarea>
 				</td>
 				<td colspan="2">
 					<label for="investigations">Investigaciones</label>
@@ -729,11 +727,10 @@
 	<hr>
 
 	<h4>Subir nueva imagen</h4>
-	<form action="" method="post" enctype="multipart/form-data">
+	<form action="?page=expedientes&patient_id=<?php echo $patient->id; ?>" method="post" enctype="multipart/form-data">
 		<table class="noeffects">
 			<tbody>
 				<tr><td>
-					<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
 					<label for="userfile">Imagen a subir</label><br>
 					<input type="file" name="userfile" id="userfile" style="border: none; box-shadow: none;">
 				</td><td>
@@ -750,6 +747,7 @@
 							}
 						?>
 				</td><td>
+					<input type="hidden" name="MAX_FILE_SIZE" value="5000000">
 					<input type="submit" name="btn_upload_image" id="btn_upload_image" class="floatright" value="Subir imagen">
 				</td></tr>
 			</tbody>
