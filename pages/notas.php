@@ -12,7 +12,7 @@
 	}
 
 
-	$result = $db->query('SELECT id, name, default_price FROM lens ORDER BY name');
+	$result = $db->query('SELECT id, name, default_price FROM lens WHERE NOT ignored ORDER BY name');
 	$lenses = '';
 	while($row = $result->fetch(PDO::FETCH_ASSOC)) {
 		if(!empty($row['name'])) {

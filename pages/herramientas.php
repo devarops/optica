@@ -8,7 +8,7 @@
 		$_SESSION['merge_patients'][] = $_GET['merge_id'];
 	} else if(isset($_GET['rem_merge_id'])) {
 		$key = array_search($_GET['rem_merge_id'], $_SESSION['merge_patients']);
-		if($key) {
+		if($key !== False) {
 			unset($_SESSION['merge_patients'][$key]);
 		}
 	}
@@ -40,6 +40,29 @@
 			$most_recent->id, '">', $most_recent->get_full_name(), '</a>.</p>', PHP_EOL;
 	}
 
+	// Add lens
+	if(isset($_POST['btn_add_lens'])) {
+		if(!empty($_POST['lens_name']) && !empty($_POST['lens_price'])) {
+			if($db->query($query)) {
+				echo '<p class="notification success"><strong>Éxito:</strong> Se creó el lente <em>', $_POST['lens_name'], '</em>.</p>', PHP_EOL;
+			} else {
+				echo '<p class="notification error"><strong>Error:</strong> No se pudo crear el lente. ¿Ya existe un lente con el mismo nombre?</p>', PHP_EOL;
+			}
+		} else {
+			echo '<p class="notification error"><strong>Error:</strong> Por favor define nombre y precio estándar para el nuevo lente.</p>', PHP_EOL;
+		}
+
+	}
+
+	// Remove (mark as ignored) lens
+	if(isset($_GET['rem_lens']) && is_numeric($_GET['rem_lens'])) {
+		if($db->query('UPDATE lens SET ignored = 1 WHERE id = ' . $_GET['rem_lens'])) {
+			echo '<p class="notification success"><strong>Éxito:</strong> Se borró el lente.</p>', PHP_EOL;
+		} else {
+			echo '<p class="notification error"><strong>Error:</strong> No se pudo borrar el lente.</p>', PHP_EOL;
+		}
+	}
+
 	// DB upload
 ?>
 
@@ -51,17 +74,47 @@
 El historial completo del paciente quedará bajo el perfil más reciente.</p>
 
 <?php
-	if(isset($_SESSION['merge_patients'])) {
+	if(isset($_SESSION['merge_patients']) && sizeof($_SESSION['merge_patients']) > 0) {
 		echo '<table style="width: 35%;" class="noeffects"><thead><tr><th>#</th><th>Fecha de creción</th><th>Nombre</th><th></th></thead><tbody>', PHP_EOL;
 		foreach($_SESSION['merge_patients'] as $patient_id) {
 			$p = new Patient($db, $patient_id);
-			echo '<tr><th>', $p->id, '</th><td>', substr($p->add_date, 0, 10), '</td><td>', $p->get_full_name(), '</td><td><a href="?page=herramientas&rem_merge_id=', $p->id, '"><img src="resources/img/icon-delete.png" height="16" width="16" alt="Borrar renglón"></a></td></tr>', PHP_EOL;
+			echo '<tr><th>', $p->id, '</th><td>', substr($p->add_date, 0, 10), '</td><td>', $p->get_full_name(), '</td><td><a href="?page=herramientas&rem_merge_id=', $p->id,
+				'"><img src="resources/img/icon-delete.png" height="16" width="16" alt="Borrar renglón"></a></td></tr>', PHP_EOL;
 		}
 		echo '<tr><td colspan="4" style="text-align: right;"><br><a href="?page=herramientas&btn_merge"><button class="yellow">Fusionar pacientes</button></td></tr>', PHP_EOL;
 		echo '</tbody></table>';
 	}
 ?>
 
+
+<h2>Lentes</h2>
+
+<table style="width: 50%;">
+	<thead>
+		<tr><th>Nombre</th><th>Precio estándar</th><td></td></tr>
+	</thead><tbody>
+<?php
+	$result = $db->query('SELECT * FROM lens WHERE NOT ignored ORDER BY name');
+	while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+		echo '<tr><td>', $row['name'], '</td><td>$', number_format($row['default_price'], 2), '</td><td><a href="?page=herramientas&rem_lens=', $row['id'],
+			'"><img src="resources/img/icon-delete.png" height="16 width="16" alt="Borrar lente"></a></td></tr>', PHP_EOL;
+	}
+?>
+	</tbody>
+</table>
+
+<fieldset style="width: 50%;">
+	<legend>Añadir lente</legend>
+	<form action="?page=herramientas" method="post">
+		<table class="noeffects">
+			<tr>
+				<td><label for="lens_name">Nombre</label><br><input type="text" name="lens_name" id="lens_name"></td>
+				<td><label for="lens_price">Precio estándar</label><br><input type="number" name="lens_price" id="lens_price"></td>
+				<td><br><input type="submit" name="btn_add_lens" value="Añadir lente"></td>
+			</tr>
+		</table>
+	</form>
+</fieldset>
 
 
 
