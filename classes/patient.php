@@ -153,7 +153,6 @@
 			$altered = False;
 			foreach(['address', 'phone', 'birthdate', 'is_flagged'] as $field) {
 				if(empty($target->$field) && !empty($this->$field)) {
-					echo 'Copying ', $field, ': ', $this->$field, '<br>';
 					$target->$field = $this->$field;
 					$altered = True;
 				}
