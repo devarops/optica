@@ -246,6 +246,16 @@
 
 		});
 
+		<?php
+			if($patient->merged_with) {
+				echo "jQuery('button, input[type=submit]').remove();", PHP_EOL;
+				echo "jQuery('input, select, textarea').prop('disabled', true);", PHP_EOL;
+				echo "jQuery('#search_kwds').prop('disabled', false);", PHP_EOL;
+				echo "alert('Este paciente he sido fusionado!');", PHP_EOL; 
+			}
+		?>
+
+
 		<?php if(isset($record->lectura)) { echo "jQuery('#lectura').trigger('change');"; } ?>
 	});
 </script>
@@ -257,7 +267,10 @@
 <div id="patient_search_result" class="search result"></div>
 
 <fieldset>
-	<legend><?php echo (isset($patient) ? $patient->get_full_name(true) : 'Expediente nuevo') ?></legend>
+	<legend><?php
+		echo (isset($patient) ? $patient->get_full_name(true) : 'Expediente nuevo');
+		echo ($patient->merged_with ? ' &ndash; Fusionado con #<a href="?page=expedientes&patient_id=' . $patient->merged_with . '">' . $patient->merged_with . '</a>' : '');
+	?></legend>
 	<form name="expediente" action="?page=expedientes" method="post">
 		<table class="noeffects">
 			<tr>
@@ -303,7 +316,9 @@
 			<tr>
 				<td colspan="2">
 					<label for="comments">Comentarios</label><br>
-					<input type="text" name="patient[comments]" id="comments" style="width: 88%;" tabindex="8" placeholder="Notas sobre el paciente" value="<?php if(isset($patient->comments)) { echo $patient->comments; } ?>">
+					<textarea name="patient[comments]" id="comments" style="width: 88%;" tabindex="8" placeholder="Notas sobre el paciente">
+						<?php if(isset($patient->comments)) { echo $patient->comments; } ?>
+					</textarea>
 				</td>
 				<td colspan="2">
 					<label for="investigations">Investigaciones</label>
@@ -326,6 +341,7 @@
 				<td colspan="4">
 			<?php if(isset($patient)) { ?>
 				<input type="hidden" name="patient[patient_id]" id="patient_id" value="<?php echo $patient->id; ?>">
+				<a href="?page=herramientas&merge_id=<?php echo $patient->id; ?>"><button type="button" class="yellow floatright">Marcar para fusión</button></a>
 				<button style="margin-right: 3px;" type="button" id="btn_unlock" class="floatright" onclick="unlock_new_record();">Nueva examinación</button>
 				<a href="?page=notas&amp;patient_id=<?php echo $patient->id; ?>"><button type="button" id="btn_nota" class="green floatright">Agregar nota de remisión</button></a>
 			<?php } ?>

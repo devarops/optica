@@ -11,25 +11,25 @@
 	if(sizeof($input) >= 4) {
 		$first_two = $input[0] . $input[1];
 		$last_two  = $input[2] . $input[3];
-		$stmt = $db->prepare('SELECT id, firstname, lastname, gender, add_date FROM patient WHERE (firstname LIKE :first_two AND lastname LIKE :last_two) OR (firstname LIKE :last_two AND lastname LIKE :first_two)');
+		$stmt = $db->prepare('SELECT id, firstname, lastname, gender, add_date FROM patient WHERE ((firstname LIKE :first_two AND lastname LIKE :last_two) OR (firstname LIKE :last_two AND lastname LIKE :first_two)) AND merged_with IS NULL');
 		$stmt->bindParam(':first_two', $first_two);
 		$stmt->bindParam(':last_two', $last_two);
 	} elseif(sizeof($input) == 3) {
 		$first_two = $input[0] . $input[1];
 		$last_two = $input[1] . $input[2];
-		$stmt = $db->prepare('SELECT id, firstname, lastname, gender, add_date FROM patient WHERE (firstname LIKE :first_two AND lastname LIKE :last_single) OR (firstname LIKE :first_single AND lastname LIKE :last_two) OR (firstname LIKE :last_two AND lastname LIKE :first_single) OR (firstname LIKE :last_single AND lastname LIKE :first_two)');
+		$stmt = $db->prepare('SELECT id, firstname, lastname, gender, add_date FROM patient WHERE ((firstname LIKE :first_two AND lastname LIKE :last_single) OR (firstname LIKE :first_single AND lastname LIKE :last_two) OR (firstname LIKE :last_two AND lastname LIKE :first_single) OR (firstname LIKE :last_single AND lastname LIKE :first_two)) AND merged_with IS NULL');
 		$stmt->bindParam(':first_single', $input[0]);
 		$stmt->bindParam(':last_single', $input[2]);
 		$stmt->bindParam(':first_two', $first_two);
 		$stmt->bindParam(':last_two', $last_two);
 	} elseif(sizeof($input) == 2) {
 		$both = $input[0] . $input[1];
-		$stmt = $db->prepare('SELECT id, firstname, lastname, gender, add_date FROM patient WHERE (firstname LIKE :first AND lastname LIKE :last) OR (firstname LIKE :last AND lastname LIKE :first) OR firstname LIKE :both OR lastname LIKE :both');
+		$stmt = $db->prepare('SELECT id, firstname, lastname, gender, add_date FROM patient WHERE ((firstname LIKE :first AND lastname LIKE :last) OR (firstname LIKE :last AND lastname LIKE :first) OR firstname LIKE :both OR lastname LIKE :both) AND merged_with IS NULL');
 		$stmt->bindParam(':first', $input[0]);
 		$stmt->bindParam(':last', $input[1]);
 		$stmt->bindParam(':both', $both);
 	} else {
-		$stmt = $db->prepare('SELECT id, firstname, lastname, gender, add_date FROM patient WHERE firstname LIKE :input OR lastname LIKE :input');
+		$stmt = $db->prepare('SELECT id, firstname, lastname, gender, add_date FROM patient WHERE (firstname LIKE :input OR lastname LIKE :input) AND merged_with IS NULL');
 		$stmt->bindParam(':input', $input[0]);
 	}
 
@@ -43,7 +43,7 @@
 		echo '<table class="tablesorter clickable_tr">', PHP_EOL;
 		echo '<thead><tr><th>Nombre</th><th>Apellido</th><th>Género</th><th>Fecha</th><td></td></tr></thead>', PHP_EOL, '<tbody>', PHP_EOL;
 		foreach($result as $row) {
-			echo '<tr onclick="document.location = \'?page=expedientes&patient_id=', $row['id'], '\'"><td>', $row['firstname'], '</td><td>', $row['lastname'], '</td><td>', ($row['gender'] == 0 ? 'Hombre' : 'Mujer'), '</td><td>', substr($row['add_date'], 0, 10), '</td><td><a href="?page=notas&patient_id=', $row['id'], '" title="Agregar nota de remisión"><img src="resources/img/icon-add.png" height="16" width="16" alt="Agregar nota"></a></tr>', PHP_EOL;
+			echo '<tr onclick="document.location = \'?page=expedientes&patient_id=', $row['id'], '\'"><td>', $row['firstname'], '</td><td>', $row['lastname'], '</td><td>', ($row['gender'] == 0 ? 'Hombre' : 'Mujer'), '</td><td>', substr($row['add_date'], 0, 10), '</td><td><a href="?page=notas&patient_id=', $row['id'], '" title="Agregar nota de remisión"><img src="resources/img/icon-add.png" height="16" width="16" alt="Agregar nota"></a> <a href="?page=herramientas&merge_id=', $row['id'], '" title="Marcar para fusión"><img src="resources/img/icon-merge.png" height="16" width="16" alt="Marcar para fusión"></a></tr>', PHP_EOL;
 		}
 		echo '</tbody>', PHP_EOL, '</table>', PHP_EOL;
 	} else {
