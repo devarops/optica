@@ -76,7 +76,7 @@
 	 	 * 2. Add foreign key constraint
 	 	 */
 		'Adding `patient`.`merged_with`' => "ALTER TABLE `patient` ADD COLUMN `merged_with` int(11) DEFAULT NULL",
-		'Creating foreign key constraint' => "ALTER TABLE `patient` ADD FOREIGN KEY(`merged_with`) REFERENCES patient(id)",
+		'Creating foreign key constraint `merged_with`' => "ALTER TABLE `patient` ADD FOREIGN KEY(`merged_with`) REFERENCES patient(id)",
 
 		/* Remission note
 		 * 1. Salesperson ID
@@ -87,7 +87,7 @@
 		'Adding salesperson_id field' => "ALTER TABLE `remission_note` ADD COLUMN `salesperson_id` tinyint(3) unsigned DEFAULT NULL",
 		'Adding commission field' => "ALTER TABLE `remission_note` ADD COLUMN `commission` float DEFAULT NULL",
 		'Adding commission TS field' => "ALTER TABLE `remission_note` ADD COLUMN `commission_claimed` datetime DEFAULT NULL",
-		'Creating foreign key constraint' => "ALTER TABLE `remission_note` ADD FOREIGN KEY(`salesperson_id`) REFERENCES user(id)",
+		'Creating foreign key constraint `salesperson_id`' => "ALTER TABLE `remission_note` ADD FOREIGN KEY(`salesperson_id`) REFERENCES user(id)",
 	];
 
 	foreach($queries as $desc => $query) {
