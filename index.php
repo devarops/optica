@@ -127,29 +127,54 @@
 		// Remission notes
 		// ---------------
 		if(isset($_POST['btn_nota'])) {
+			$ok              = True; // Awful...
+			$is_admin_update = False;
+
+			if(isset($_POST['is_update'])) {
+				$employee        = new Employee($db, $_POST['employee_id']);
+				$is_admin_update = $employee->is_admin;
+			}
+
+
 			if(!isset($_POST['patient_id']) || !is_numeric($_POST['patient_id'])) {
 				$message = array('<p><strong>Error:</strong> Hace falta eligír un paciente.</p>', 'error');
+				$ok      = False;
 			} else if(!isset($_POST['salesperson_id']) || !is_numeric($_POST['salesperson_id'])) {
 				$message = array('<p><strong>Error:</strong> Hace falta eligír un vendedor.</p>', 'error');
-			} else {
+				$ok      = False;
+			} else if(isset($_POST['is_update']) && !$employee->checkPassword($_POST['employee_password'])) {
+				$message = array('<p>Strong>Error:</strong> Usuario no autorizado.</p>', 'error');
+				$ok      = False;
+			}
+
+			if($ok) {
 				$rn = new RemissionNote($db, (isset($_POST['remission_note_id']) ? $_POST['remission_note_id'] : 0));
 				unset($_POST['btn_nota']);
 				foreach($_POST as $key => $value) {
+					//echo nl2br(print_r([$key, $value], true));
 					//if($key == 'item_name') { break; }
 					$rn->$key = $value;
 				}
 
 				// Format the product arrays (first if just to avoid unnecessary processing during updates)
-				if(isset($_POST['item_name'])) {
+				if(isset($_POST['item_name'])) {// && !isset($_POST['is_update'])) {
 					$products = array();
 					for($i = 0; $i < sizeof($_POST['item_name']); $i++) {
 						if(!array_key_exists($_POST['item_type'][$i], $products)) {
 							$products[$_POST['item_type'][$i]] = array();
 						}
 
+						if($is_admin_update && $_POST['item_type'][$i] == 'frame') {
+							$row = $db->query('SELECT remission_note_id FROM frame WHERE id = ' . $_POST['item_id'][$i])->fetch(PDO::FETCH_ASSOC);
+							if($row['remission_note_id']) {
+								// Already belongs to somebody (most likely us); skip
+								continue;
+							}
+						}
+
 						$products[$_POST['item_type'][$i]][] = array(
 							'name' => $_POST['item_name'][$i],
-							'id' => $_POST['item_id'][$i],
+							'id' => ($_POST['item_id'][$i] ? $_POST['item_id'][$i] : ''),
 							'price' => $_POST['item_price'][$i]
 						);
 					}
@@ -157,9 +182,9 @@
 					$rn->handle_products($products);
 				}
 
-				$new_id = $rn->save();
+				$new_id = $rn->save($is_admin_update);
 				if($new_id) {
-					$message = array('<p>Los datos fueron almacenados exitosamente!</p>', 'success');
+					$message = array('<p><strong>Éxito:</strong> Los datos fueron almacenados exitosamente!</p>', 'success');
 					$_GET['id'] = $new_id; // Hack to properly load everything 
 				}
 			}
@@ -241,6 +266,7 @@
 			</header>
 
 			<div id="cont">
+				<div id="msgbox"></div>
 				<?php
 					require_once('pages/' . $page . '.php');
 				?>

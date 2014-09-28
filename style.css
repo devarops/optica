@@ -93,8 +93,8 @@ body {
 	padding: 10px 4px 8px 4px;
 	border: 1px solid #aaa;
 	border-left: 0;
-} input:disabled, textarea:disabled, select:disabled {
-	background-color: #efefef;
+} input:disabled, textarea:disabled, select:disabled, button:disabled {
+	background-color: #efefef !important;
 	border: 1px dashed #aaa;
 }  div.input-group.disabled > div.input-addon {
 	background-color: #efefef;
@@ -224,6 +224,13 @@ ul#mainmenu {
 	border: 1px solid #f7f7f7;
 } .fb-grid > div.box h3 {
 	margin-top: 0;
+} .row_options {
+	display: none;
+	vertical-align: middle;
+} .row_options a {
+	cursor: pointer;
+	margin: 0 2px;
+	display: inline-block;
 }
 
 /* Notifications */

@@ -1,4 +1,11 @@
 <?php
+	/* This part of the system has turned into a royal mess...
+	 * In a future version, implement some form of versioning,
+	 * e.g. creating a child note with the new changes.
+	 *
+	 * Should be using templates here, at the very least. :\
+	 */
+
 	if(isset($_GET['id'])) {
 		$rn = new RemissionNote($db, $_GET['id']);
 		if(!isset($rn->down_payment)) {
@@ -26,15 +33,6 @@
 		$frames .= '{"label": "' . $row['id'] . '", "id": "' . $row['id'] . '", "price": "' . $row['price'] . '"}, ';
 	}
 
-	// Autocomplete for salesperson
-	/* (!) Deprecated.
-	$result = $db->query('SELECT DISTINCT salesperson FROM remission_note ORDER BY salesperson DESC');
-	$salespeople = '';
-	while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-		$salespeople .= '"' . $row['salesperson'] . '", ';
-	}
-	 */
-
 	// Autocomplete for process
 	$result = $db->query('SELECT DISTINCT process FROM remission_note ORDER BY process DESC');
 	$process = '';
@@ -45,11 +43,10 @@
 
 <script>
 	jQuery(function() {
-		var available_lenses = [<?php echo substr($lenses, 0, -2); ?>];
-		var available_frames = [<?php echo substr($frames, 0, -2); ?>];
+		var selected_frames       = [];
+		var available_lenses      = [<?php echo substr($lenses, 0, -2); ?>];
+		var available_frames      = [<?php echo substr($frames, 0, -2); ?>];
 		var available_salespeople = [<?php echo substr($salespeople, 0, -2); ?>];
-		//var available_process = [<?php echo substr($process, 0, -2); ?>];
-		var selected_frames = [];
 
 		// If no patient is selected, disable all fields...
 		if(!jQuery('#patient_id').val()) {
@@ -75,14 +72,88 @@
 			}
 		});
 
-		// Salesperson autocomplete
-		//jQuery('#salesperson').autocomplete({ source: available_salespeople });
+		// Unlock buttons
+		jQuery('#employee_id, #employee_password').change(function() {
+			jQuery('#add_row, #btn_nota, #down_payment, #salesperson, #commission, #observations, .item_name, .product_price').prop('disabled', true);
+			jQuery('.row_options').hide();
 
-		// Process autocomplete
-		//jQuery('#process').autocomplete({ source: available_process });
+			var id = jQuery('#employee_id').val();
+			var pw = jQuery('#employee_password').val();
+
+			if(!id || !pw) { return; }
+
+			jQuery.post('resources/ajax/auth_employee.php', { id: id, pw: pw }, function(response) {
+				if(response.is_authed) {
+					jQuery('#btn_nota').prop('disabled', false);
+					jQuery('#auth_status').html('Credenciales correctos!').css('color', '#090');
+				} else {
+					jQuery('#auth_status').html('Credenciales incorrectos!').css('color', '#900');
+				}
+
+				if(response.is_admin) {
+					jQuery('#add_row, #down_payment, #commission, #observations, .item_name, .product_price').prop('disabled', false);
+					jQuery('.row_options').show();
+				}
+			}, 'json');
+		});
+
+		// Unlink frame
+		jQuery('.unlink_frame').click(function(event) {
+			event.preventDefault();
+
+			if(!confirm('Este acción devolverá el armazón al inventario. Quedará disponible para venta en otra nota de remisión. ¿Continuar?')) {
+				return;
+			}
+
+			var r_id = jQuery('#remission_note_id').val();
+			var f_id = jQuery(this).attr('data-id');
+			var e_id = jQuery('#employee_id').val();
+			var e_pw = jQuery('#employee_password').val();
+
+			if(!r_id || !e_id || !e_pw) { return; }
+
+			jQuery.post('resources/ajax/unlink_frame.php', { f_id: f_id, e_id: e_id, e_pw: e_pw, r_id: r_id }, function(response) {
+				if(response.status == 'success') {
+					jQuery('#frame_' + f_id).remove();
+				}
+
+				jQuery('#msgbox').append('<p class="notification ' + response.status + '">' + response.msg + '</p>');
+				jQuery('#observations').append("\n" + response.msg_obs);
+			}, 'json');
+
+			jQuery('#down_payment').trigger('change'); // Recalculate costs
+		});
+
+		// Mark frame as defective
+		jQuery('.defective').click(function(event) {
+			event.preventDefault();
+
+			if(!confirm('Este acción marcará el armazón como defectuoso, quitándolo de la nota de remisión. ¿Continuar?')) {
+				return;
+			}
+
+			var r_id = jQuery('#remission_note_id').val();
+			var f_id = jQuery(this).attr('data-id');
+			var e_id = jQuery('#employee_id').val();
+			var e_pw = jQuery('#employee_password').val();
+
+			if(!r_id || !e_id || !e_pw) { return; }
+
+			jQuery.post('resources/ajax/mark_frame_defective.php', { f_id: f_id, e_id: e_id, e_pw: e_pw, r_id: r_id }, function(response) {
+				if(response.status == 'success') {
+					jQuery('#frame_' + f_id).remove();
+				}
+
+				jQuery('#msgbox').append('<p class="notification ' + response.status + '">' + response.msg + '</p>');
+				jQuery('#observations').append("\n" + response.msg_obs);
+			}, 'json');
+
+			jQuery('#down_payment').trigger('change');
+		});
 
 		// Product type change
-		jQuery('select.item_type').change(function() {
+		//jQuery('select.item_type').change(function() {
+		jQuery('body').on('change', '.item_type', function() {
 			type = jQuery(this).val();
 			next_elem = jQuery(':input:eq(' + (jQuery(':input').index(this) + 1) + ')');
 			item_id_field = jQuery(next_elem).siblings('input[type=hidden]');
@@ -107,8 +178,6 @@
 						jQuery(this).val(ui.item.label);
 						jQuery(this).siblings('input[type=hidden]').val(ui.item.id);
 						jQuery(this).parent().siblings('.iprice').children('input[type=number]').val(ui.item.price).change();
-
-						// If jQuery(next_elem).hasClass('error'), remove it
 					}
 					return false;
 				}});
@@ -157,11 +226,12 @@
 
 			commission = subtotal * 0.03;
 
-
 			jQuery('#subtotal').html(subtotal.toFixed(2));
 			jQuery('#total').html((subtotal - abono).toFixed(2));
 			jQuery('#total_hidden').val((subtotal - abono).toFixed(2));
+			<?php if(!$rn) { // Only dynamically update commission if it's a NEW remission note ?>
 			jQuery('#commission').val('$' + commission.toFixed(2));
+			<?php } ?>
 		});
 	});
 
@@ -181,6 +251,13 @@
 		new_row = jQuery('#product_list tbody > tr:last').clone(true);
 		jQuery(new_row).children('.iname').children().remove();
 		jQuery(new_row).children('.iname').append('<input type="text" name=item_name[]" class="item_name" placeholder="Producto" readonly="readonly" style="width: 80%;"><input type="hidden" name="item_id[]" class="item_id">');
+
+		var first_td = jQuery(new_row).children('td:first-child');
+		if(jQuery(first_td).hasClass('empty')) {
+			jQuery(first_td).empty();
+			jQuery(first_td).append('<select name="item_type[]" class="item_type"><option selected="" disabled="">–</option><option value="lens">Lente</option><option value="frame">Armazón</option><option value="other">Otro</option></select>');
+		}
+
 		new_row.insertAfter('#product_list tbody > tr:last');
 		jQuery('#product_list tbody > tr:last input').val('');
 	}
@@ -223,34 +300,45 @@ o
 		<table id="product_list" class="noeffects" style="width: 600px;">
 			<thead>
 				<tr><th><?php if(!isset($rn)) { echo 'Tipo'; } ?></th><th>Nombre / descripción / ID</th><th>Precio</th></tr>
-			<thead>
+			<thead><tbody>
 <?php
 	if(isset($rn)) {
 		echo '<tbody>', PHP_EOL;
 		$products = $rn->get_product_list();
 		$subtotal = 0;
+
 		foreach($products as $product) {
-			echo '<tr><td style="width: 80px;"></td><td>', $product['name'], '</td><td style="width: 220px;">$', $product['price'], '</td></tr>', PHP_EOL;
+			echo (!empty($product['id']) ? '<tr id="frame_' . $product['id'] . '">' : '<tr>'),
+				'<td class="empty"><input type="hidden" name="item_type[]" value="', (!empty($product['id']) ? 'frame' : ''), '"></td>',
+				'<td class="iname"><input type="text" name="item_name[]" class="item_name" placeholder="', $product['name'], '" value="', $product['name'], '" style="width: 80%;" readonly="readonly">',
+					'<input type="hidden" name="item_id[]" class="item_id" value="', (!empty($product['id']) ? $product['id'] : ''), '"></td>',
+				'<td class="iprice"><input type="number" name="item_price[]" class="product_price" placeholder="', $product['price'], '" value="', $product['price'], '" step="any" readonly="readonly"></td>';
+				if($rn->id != -1) {
+					echo '<td class="row_options">',
+						(empty($product['id']) ? '<a class="rem_product" title="Borrar renglón">' : '<a class="unlink_frame" title="Devolver armazón al inventorio" data-id="' . $product['id'] . '">'), '<img src="resources/img/icon-delete.png" height="16" width="16" alt="Borrar renglón"></a>',
+						(!empty($product['id']) ? '<a data-id="' . $product['id'] . '" class="defective" title="Marcar como defectuoso">' .
+							'<img src="resources/img/icon-trash.png" height="16" alt="Marcar como defectuoso"></a>' : ''),
+					'</td></tr>';
+				}
+			//echo '<tr><td style="width: 80px;"></td><td>', $product['name'], '</td><td style="width: 220px;">$', $product['price'], '</td></tr>', PHP_EOL;
 			$subtotal += $product['price'];
 		}
 ?>
-				<tr><td colspan="3"><br></td></tr>
 			</tbody>
 		</table>
 <?php
 	} else {
 ?>
-			<tbody>
 				<tr>
 					<td><select name="item_type[]" class="item_type"><option selected disabled>&ndash;</option><option value="lens">Lente</option><option value="frame">Armazón</option><option value="other">Otro</option></select></td>
 					<td class="iname"><input type="text" name="item_name[]" class="item_name" placeholder="Producto" style="width: 80%;" readonly="readonly"><input type="hidden" name="item_id[]" class="item_id" value=""></td>
 					<td class="iprice"><input type="number" name="item_price[]" class="product_price" placeholder="Precio" step="any" readonly="readonly"></td>
-					<td><a class="rem_product" title="Borrar renglón" style="display: inline-block; cursor: pointer; margin: 60% 0 0 0;"><img src="resources/img/icon-delete.png" height="16" width="16" alt="Borrar renglón"></a></td>
+					<td class="row_options"><a class="rem_product" title="Borrar renglón"><img src="resources/img/icon-delete.png" height="16" width="16" alt="Borrar renglón"></a></td>
 				</tr>
 			</tbody>
 		</table>
-		<button type="button" name="add_row" id="add_row" onclick="add_product_row();" class="green"><strong>+</strong> Agregar renglón</button>
 <?php } ?>
+		<button type="button" name="add_row" id="add_row" onclick="add_product_row();" class="green"<?php echo (isset($rn) ? 'disabled="disabled"' : ''); ?>><strong>+</strong> Agregar renglón</button>
 
 		<table class="noeffects" style="width: 600px;">
 			<tbody>
@@ -274,14 +362,18 @@ o
 				<tr>
 					<td colspan="2">
 						<label for="salesperson">Vendedor</label><br>
-						<!--<input type="text" name="salesperson" id="salesperson" placeholder="Vendedor" style="width: 80%;"<?php if(isset($rn)) { echo ' value="', $rn->salesperson, '" disabled="disabled"'; } ?>>-->
+						<?php 
+							if(isset($rn)) {
+								echo '<input type="hidden" name="salesperson_id" value="', $rn->salesperson_id, '">'; 
+							}
+						?>
 						<select name="salesperson_id" id="salesperson" placeholder="Vendedor" style="width: 90%;" <?php if(isset($rn)) { echo ' disabled="disabled"'; } ?>>
-							<option selected disabled>Vendedor</option>
-							<?php
-								foreach(Employee::getEmployees($db) as $employee) {
-									echo '<option value="', $employee['id'], '"', (isset($rn) && $rn->salesperson_id == $employee['id'] ? ' selected' : '')  , '>' . $employee['name'] . '</option>' . PHP_EOL;
-								}
-							?>
+						<option selected disabled>Vendedor</option>
+						<?php
+							foreach(Employee::getEmployees($db) as $employee) {
+								echo '<option value="', $employee['id'], '"', (isset($rn) && $rn->salesperson_id == $employee['id'] ? ' selected' : '')  , '>' . $employee['name'] . '</option>' . PHP_EOL;
+							}
+						?>
 						</select>
 					</td>
 					<td colspan="2">
@@ -325,15 +417,27 @@ o
 						<?php } ?>
 					</td>
 				</tr>
-				<tr><td colspan="4" style="text-align: right;">
-					<?php
-						if(isset($rn)) {
-							echo '<input type="hidden" name="remission_note_id" id="remission_note_id" value="', $rn->id, '">', PHP_EOL;
-							echo '<input type="submit" id="btn_nota" name="btn_nota" value="Actualizar nota">', PHP_EOL;
-						} else {
-							echo '<input type="submit" id="btn_nota" name="btn_nota" value="Guardar nota de remisión">', PHP_EOL;
-						}
-					?>
+				<?php if(isset($rn)) {
+					echo '<input type="hidden" name="is_update" value="true">';
+					echo '<tr><td colspan="2">', PHP_EOL;
+					echo '<select name="employee_id" id="employee_id"><option selected disabled>Empleado</option>', PHP_EOL;
+					foreach(Employee::getEmployees($db) as $employee) {
+						echo '<option value="', $employee['id'], '">' . $employee['name'] . '</option>' . PHP_EOL;
+					}
+					echo '</select>', PHP_EOL;
+					echo '<input type="password" name="employee_password" id="employee_password" placeholder="Contraseña" style="width: 70px;">', PHP_EOL;
+					echo '<br><span id="auth_status" class="small"></span>', PHP_EOL;
+				?>
+						
+					</td><td colspan="2" style="text-align: right;">
+						<input type="hidden" name="remission_note_id" id="remission_note_id" value="<?php echo $rn->id; ?>">
+						<input type="submit" id="btn_nota" name="btn_nota" value="Actualizar nota" disabled>
+					</td></tr>
+					<?php } else { ?>
+						<tr><td colspan="4" style="text-align: right;">
+							<input type="submit" id="btn_nota" name="btn_nota" value="Guardar nota de remisión">
+						</td></tr>
+					<?php } ?>
 				</td></tr>
 			</tbody>
 		</table>
