@@ -1,5 +1,5 @@
 <?php
-	$glaucoma_study_id = 1;
+	$glaucoma_study_id = 4;
 
 	if(isset($_GET['patient_id'])) {
 		$patient = new Patient($db, $_GET['patient_id']);
