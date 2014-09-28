@@ -396,7 +396,7 @@
 					<input type="checkbox" name="has_diabetes" id="has_diabetes" value="1" tabindex="15" <?php if(isset($record->has_diabetes) && $record->has_diabetes) { echo 'checked'; } ?>><label for="has_diabetes">Diabetes</label><br>
 					<input type="checkbox" name="has_hypertension" id="has_hypertension" value="1" tabindex="16" <?php if(isset($record->has_hypertension) && $record->has_hypertension) { echo 'checked'; } ?>><label for="has_hypertension">Hipertensión arteral</label><br>
 					<input type="checkbox" name="has_glaucoma_history" id="has_glaucoma_history" value="1" tabindex="17" <?php if(isset($record->has_glaucoma_history) && $record->has_glaucoma_history) { echo 'checked'; } ?>><label for="has_glaucoma_history">Antecedentes familiares de glaucoma</label><br>
-					<input type="checkbox" id="in_glaucoma_study" disabled <?php echo ($patient->is_participant($glaucoma_study_id) ? ' checked' : ''); ?>><label for="in_glaucoma_study">Diagnosticado con glaucoma</label>
+					<input type="checkbox" id="in_glaucoma_study" disabled <?php echo (isset($patient) && $patient->is_participant($glaucoma_study_id) ? ' checked' : ''); ?>><label for="in_glaucoma_study">Diagnosticado con glaucoma</label>
 				</td>
 			</tr>
 			<tr>
