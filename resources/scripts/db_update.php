@@ -21,7 +21,7 @@
 		'tag' => "CREATE TABLE `tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(64) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8",
@@ -59,6 +59,9 @@
 	}
 
 	$queries = [
+		/* Add image tags */
+		'Adding image tags' => "INSERT INTO `tag` (title) VALUES ('Anisocoria'), ('Arco senil'), ('Blefaritis'), ('Campimetría'), ('Chalazión'), ('Conjuntivitis'), ('Desviación'), ('Ectropión'), ('Fondo de ojo'), ('Hemorragia subconjuntival'), ('Leucoma'), ('Opacificación'), ('Orzuelo'), ('Pingüécula'), ('Pterigión'), ('Ptosis')",
+		
 		/* Lens table
 	 	 * 1. Add column `ignored`
 	 	 * 2. Flag all current entries ignored
