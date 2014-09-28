@@ -43,7 +43,7 @@
 	// Add lens
 	if(isset($_POST['btn_add_lens'])) {
 		if(!empty($_POST['lens_name']) && !empty($_POST['lens_price'])) {
-			if($db->query($query)) {
+			if($db->query("INSERT INTO lens (name, default_price) VALUES ('" . $_POST['lens_name'] . "', " . $_POST['lens_price'] .")")) {
 				echo '<p class="notification success"><strong>Éxito:</strong> Se creó el lente <em>', $_POST['lens_name'], '</em>.</p>', PHP_EOL;
 			} else {
 				echo '<p class="notification error"><strong>Error:</strong> No se pudo crear el lente. ¿Ya existe un lente con el mismo nombre?</p>', PHP_EOL;
