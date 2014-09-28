@@ -27,23 +27,28 @@
 			$this->validate();
 
 			if($this->id == 0) {
-				$stmt = $this->db->prepare("INSERT INTO user");
+				$stmt = $this->db->prepare("INSERT INTO user (username, password, name, created, is_active) VALUES (:username, :password, :name, :created, :is_active)");
+				$stmt->bindParam(':created', date('Y-m-d H:i:s'));
 			} else {
-				$stmt = $this->db->prepare("UPDATE user SET   WHERE id = :id");
+				$stmt = $this->db->prepare("UPDATE user SET username = :username, password = :password, name = :name, is_active = :is_active WHERE id = :id");
 				$stmt->bindParam(':id', $this->id);
 			}
 
-			$stmt->bindParam(':title', $this->title);
-			// ...
+			$stmt->bindParam(':name',      $this->name);
+			$stmt->bindParam(':username',  $this->username);
+			$stmt->bindParam(':is_active', $this->is_active);
+
+			$pw = (isset($this->new_password) ? md5($this->new_password) : $this->password);
+			$stmt->bindParam(':password', $pw);
 
 			if($stmt->execute()) {
 				if($this->id == 0) {
-					$tis->id = $this->db->lastInsertId();
+					$this->id = $this->db->lastInsertId();
 				}
 				return $this->id;
 			} else {
-				$error = $stmt->errorInfo();
-				die('[ERROR] ' . $error[0]);
+				return $stmt->errorInfo();
+				//die('[ERROR] ' . $error[0]);
 			}
 		}
 
@@ -60,7 +65,7 @@
 		}
 
 		public static function getEmployees($db) {
-			$result    = $db->query("SELECT id, username, name FROM user");
+			$result    = $db->query("SELECT id, username, name FROM user WHERE is_active = 1");
 			$employees = array();
 
 			while($row = $result->fetch(PDO::FETCH_ASSOC)) {
