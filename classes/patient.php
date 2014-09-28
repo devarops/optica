@@ -51,7 +51,7 @@
 				$stmt->bindParam(':id', $this->id);
 			}
 
-			if(isset($this->birthdate) && $this->birthdate > 0) {
+			if(isset($this->birthdate) && $this->birthdate > 0 && $this->birthdate < 1000) { // When merging, we are passed the *real* birthyear...
 				$this->birthdate = date('Y') - $this->birthdate; // Somewhat confusing due to the name change. Really birthYear = currentYear - ageInInt
 			} else {
 				$this->birthdate = Null;
