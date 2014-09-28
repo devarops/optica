@@ -2,12 +2,12 @@
 	class RemissionNote {
 		protected $db;
 
-		public function __construct($db, $id=0) {
+		public function __construct($db, $id = 0) {
 			$this->db = $db;
 			$this->misc_products_prices = '';
 			$this->commission_rate = 0.03;
 
-			if($id > 0) {
+			if($id !== 0) {
 				$this->id = $id;
 				$stmt = $this->db->prepare('SELECT * FROM remission_note WHERE id = :id');
 				$stmt->bindParam(':id', $this->id);
@@ -27,6 +27,7 @@
 
 		public function handle_products($products) {
 			// Products in nested arrays, array( 'type' => array(product1, product2, ...), ...)
+			$this->misc_products_prices = ''; // Reset...
 			foreach($products as $key => $category) {
 				if($key != 'frame') {
 					foreach($products[$key] as $item) {
@@ -44,9 +45,9 @@
 			$products = array();
 
 			//$result = $this->db->query('SELECT CONCAT(brand, \' \', model, \' \', shape, \' \', colour) AS description, price FROM frame WHERE remission_note_id = ' . $this->id);
-			$result = $this->db->query('SELECT CONCAT(\'Armazón #\', id, \' (\', brand, \')\') AS description, price FROM frame WHERE remission_note_id = ' . $this->id);
+			$result = $this->db->query('SELECT CONCAT(\'Armazón #\', id, \' (\', brand, \')\') AS description, price, id FROM frame WHERE remission_note_id = ' . $this->id);
 			while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-				$products[] = array('name' => $row['description'], 'price' => $row['price']);
+				$products[] = array('name' => $row['description'], 'price' => $row['price'], 'id' => $row['id']);
 			}
 
 			if(!empty($this->misc_products_prices)) {
@@ -60,40 +61,50 @@
 			return $products;
 		}
 
-		public function save() {
+		public function save($admin_update = False) {
+			// Turned AWFUL with the whole "admin update" thing...
 			$this->validate();
 
 			if($this->id == 0) {
 				$stmt = $this->db->prepare("INSERT INTO remission_note (add_date, patient_id, down_payment, process, salesperson_id, observations, total, misc_products_prices, commission) VALUES (:add_date, :patient_id, :down_payment, :process, :salesperson_id, :observations, :total, :misc_products_prices, :commission)");
 				$stmt->bindParam(':add_date', $this->add_date);
 				$stmt->bindParam(':patient_id', $this->patient_id);
-				$stmt->bindParam(':down_payment', $this->down_payment);
 				$stmt->bindParam(':salesperson_id', $this->salesperson_id);
-				$stmt->bindParam(':observations', $this->observations);
-				$stmt->bindParam(':total', $this->total);
-				$stmt->bindParam(':misc_products_prices', $this->misc_products_prices);
-
 				// Important note, total is actually the REAL total MINUS the down payment... Bad
 				// In a future update of the remission note system (including proper connection tables for lenses and other products), this should be attended
 				$commission = ($this->total + $this->down_payment) * $this->commission_rate; // Can't calculate this within bindParam for some reason
 				$stmt->bindParam(':commission', $commission);
 			} else {
-				$stmt = $this->db->prepare("UPDATE remission_note SET process = :process WHERE id = :id");
+
+				if($admin_update) {
+					$stmt = $this->db->prepare("UPDATE remission_note SET process = :process, down_payment = :down_payment, observations = :observations, total = :total, commission = :commission, misc_products_prices = :misc_products_prices WHERE id = :id");
+					$stmt->bindParam(':commission', $this->commission);
+				} else {
+					$stmt = $this->db->prepare("UPDATE remission_note SET process = :process WHERE id = :id");
+				}
+
 				$stmt->bindParam(':id', $this->id);
 			}
 
 			$this->process = strtoupper($this->process);
 			$stmt->bindParam(':process', $this->process);
+
+			if($this->id == 0 || $admin_update) {
+				$stmt->bindParam(':down_payment', $this->down_payment);
+				$stmt->bindParam(':observations', $this->observations);
+				$stmt->bindParam(':total', $this->total);
+				$stmt->bindParam(':misc_products_prices', $this->misc_products_prices);
+			}
 			
 			if($stmt->execute()) {
 				if($this->id == 0) {
 					$this->id = $this->db->lastInsertId();
+				}
 
-					// Handle frame insertions
-					if(isset($this->frames)) {
-						foreach($this->frames as $frame) {
-							$this->db->query('UPDATE frame SET remission_note_id = ' . $this->id . ', price = ' . $frame['price'] . ' WHERE id = ' . $frame['id']);
-						}
+				// Handle frame insertions
+				if(isset($this->frames)) {
+					foreach($this->frames as $frame) {
+						$this->db->query('UPDATE frame SET remission_note_id = ' . $this->id . ', price = ' . $frame['price'] . ' WHERE id = ' . $frame['id']);
 					}
 				}
 
