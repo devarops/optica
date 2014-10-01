@@ -3,7 +3,7 @@
 	$db_name = 'opticahorus';
 	$db_host = 'localhost';
 	$db_user = 'USERNAME';
-	$db_pwd  = 'PASSWORD';
+	$db_pass = 'PASSWORD';
 
 	try {
 		$db = new PDO('mysql:host=' . $db_host . ';dbname=' . $db_name . ';charset=utf8', $db_user, $db_pass, array(PDO::ATTR_PERSISTENT => true, PDO::ERRMODE_EXCEPTION => true));
