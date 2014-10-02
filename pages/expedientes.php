@@ -90,10 +90,11 @@
 	}
 
 	function unlock_new_record() {
-		jQuery('#record').find('input').removeAttr('disabled');
-		jQuery('#record').find('textarea').removeAttr('disabled');
-		jQuery('#record').find('select').removeAttr('disabled');
-		jQuery('#record .input-group').removeClass('disabled');
+		jQuery('#record').find('textarea').prop('disabled', false);
+		jQuery('#record').find('select').prop('disabled', false);
+		jQuery('#record').find('input').prop('disabled', false);
+		jQuery('#record .input-group').prop('disabled', false);
+		jQuery('#in_glaucoma_study').prop('disabled', true);
 		jQuery('#btn_unlock').remove();
 		jQuery('#btn_submit').show();
 	}
