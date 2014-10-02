@@ -815,14 +815,8 @@
 	<div class="control-iop" style="border-left: 1px solid #ccc; width: 43%; float: left; margin-left: -1px; padding-left: 10px;">
 		<h4 style="text-align: center;">Control de presión intraocular</h4>
 
-		<a id="dl_pio_od" target="_blank" href="" download="PIO OD <?php echo $patient->get_full_name(), ' ', date('Y-m-d'); ?>.png"> <!-- download="" limited browser support; works in Chrome -->
-			<div id="pio_od" class="chart" style="width: 49%; height: 150px; float: left;"></div>
-		</a>
-		<a id="dl_pio_oi" target="_blank" href="" download="PIO OI <?php echo $patient->get_full_name(), ' ', date('Y-m-d'); ?>.png">
-			<div id="pio_oi" class="chart" style="width: 49%; height: 150px; float: right;"></div>
-		</a>
-
-		<p class="small" style="clear: both; padding: 10px 0 0 0;"><em>* Haz click en el gráfico para descargarlo como imágen PNG.</em></p>
+		<div id="pio_od" class="chart" style="width: 49%; height: 150px; float: left;"></div>
+		<div id="pio_oi" class="chart" style="width: 49%; height: 150px; float: right;"></div>
 
 		<table style="width: 100%; float: left; margin-top: 10px;">
 			<thead>
@@ -877,8 +871,8 @@
 							}
 						},
 						yaxis: {
-							min: <?php $min = min(min($series_od), min($series_oi)); echo round($min *= 0.9, 1); ?>,
-							max: <?php $max = max(max($series_od), max($series_oi)); echo round($max *= 1.1, 1); ?>,
+							min: <?php $min = min(min($series_od), min($series_oi)); echo round($min *= 0.8, 1); ?>,
+							max: <?php $max = max(max($series_od), max($series_oi)); echo round($max *= 1.2, 1); ?>,
 							label: 'Presión (mmHg)',
 							labelOptions: { fontSize: '12px' },
 							labelRenderer: jQuery.jqplot.CanvasAxisLabelRenderer,
@@ -891,12 +885,12 @@
 			}
 
 			piochart('pio_od', '<?php printf("Ojo derecho, λ=%.2f", $avg_od); ?>',   [[<?php echo join(', ', array_fill(0, $count, $avg_od)); ?>], [<?php echo join(', ', $series_od); ?>]]);
-			piochart('pio_oi', '<?php printf('Ojo izquierdo, λ=%.2f', $avg_oi); ?>', [[<?php echo join(', ', array_fill(0, $count, $avg_oi)); ?>], [<?php echo join(', ', $series_oi); ?>]]);
+			piochart('pio_oi', '<?php printf("Ojo izquierdo, λ=%.2f", $avg_oi); ?>', [[<?php echo join(', ', array_fill(0, $count, $avg_oi)); ?>], [<?php echo join(', ', $series_oi); ?>]]);
 
 			//var img_pio_od = jQuery('#pio_od').jqplotToImageStr({});
 			//jQuery('#pio_od').jqplotSaveImage({});
-			jQuery('#dl_pio_od').attr('href', jQuery('#pio_od').jqplotToImageStr({}));
-			jQuery('#dl_pio_oi').attr('href', jQuery('#pio_oi').jqplotToImageStr({}));
+			//jQuery('#dl_pio_od').attr('href', jQuery('#pio_od').jqplotToImageStr({}));
+			//jQuery('#dl_pio_oi').attr('href', jQuery('#pio_oi').jqplotToImageStr({}));
 		</script>
 
 
