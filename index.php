@@ -272,6 +272,6 @@
 				?>
 			</div>
 		</div>
-		<p class="small" style="text-align: center;"><strong>Óptica Horus</strong> Beatríz Mayoral</p>
+		<p class="small" style="text-align: center;"><strong>Óptica Horus</strong> Beatríz Mayoral<br>Octubre de 2014</p>
 	</body>
 </html>
