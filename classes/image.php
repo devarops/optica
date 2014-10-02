@@ -38,7 +38,7 @@
 			$target_path = $target_dir . $patient_id . '-' . basename($file['name']);
 
 			if(!is_dir($target_dir)) {
-				mkdir($target_dir, 0777);
+				mkdir($target_dir, 0777, true);
 			}
 
 			if(!move_uploaded_file($file['tmp_name'], $target_path)) {
