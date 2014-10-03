@@ -1,4 +1,6 @@
 <?php
+	//ERROR_REPORTING(E_ALL);
+	//ini_set('display_errors', 1);
 	if(isset($_REQUEST['type'])) {
 
 		// Resumenes will send an array of IDs
@@ -101,13 +103,18 @@
 		// Type: String (Decides the correct path for the output file)
 		// Template path: String
 
-		$fh = fopen($template_path, 'r');
+		$fh = fopen(getcwd() . '/' . $template_path, 'r');
 		$template = fread($fh, filesize($template_path));
 		fclose($fh);
 
-		$latex = preg_replace('/#(\w+)#/e', '$data->\\1', $template);
-		
-		$dir = '/var/www/resources/latex/' . $type . '/' . date('Y') . '/' . date('m') . '/';
+
+		//$latex = preg_replace('/#(\w+)#/e', '$data->\\1', $template);
+		$latex = preg_replace_callback('/#(\w+)#/', function($matches) use ($data) { 
+			return $data->$matches[1];
+		}, $template);
+
+		$dir = getcwd() . '/resources/latex/' . $type . '/' . date('Y/m/');
+		#$dir = '/var/www/resources/latex/' . $type . '/' . date('Y') . '/' . date('m') . '/';
 		if(!is_dir($dir)) {
 			mkdir($dir, 0777, true);
 		}
@@ -115,8 +122,8 @@
 		if($fh = fopen($dir . $filename . '.tex', 'w')) {
 			if(fwrite($fh, $latex)) {
 				#passthru('cd ' . $dir . '; pdflatex ' . $filename . '.tex');
-				#die();
-				exec('cd ' . $dir . '; pdflatex ' . $filename . '.tex');
+				exec('cd ' . $dir . '; pdflatex ' . $filename . '.tex', $test, $stat);
+
 
 				header('Content-type: application/pdf');
 				header('Content-Disposition: inline; filename="' . $filename . '.pdf"');
