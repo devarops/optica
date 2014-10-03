@@ -1,2 +1,3 @@
 #!/bin/bash
-cd /var/www/ && hg pull
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+cd "$DIR/../.." && hg pull
