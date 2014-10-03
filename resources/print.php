@@ -114,7 +114,6 @@
 		}, $template);
 
 		$dir = getcwd() . '/resources/latex/' . $type . '/' . date('Y/m/');
-		#$dir = '/var/www/resources/latex/' . $type . '/' . date('Y') . '/' . date('m') . '/';
 		if(!is_dir($dir)) {
 			mkdir($dir, 0777, true);
 		}
@@ -123,8 +122,9 @@
 			if(fwrite($fh, $latex)) {
 				#passthru('cd ' . $dir . '; pdflatex ' . $filename . '.tex');
 				exec('cd ' . $dir . '; pdflatex ' . $filename . '.tex', $test, $stat);
-
-
+				# print_r($test);
+				# print_r($stat);
+				# die();
 				header('Content-type: application/pdf');
 				header('Content-Disposition: inline; filename="' . $filename . '.pdf"');
 				header('Content-Transfer-Encoding: binary');
