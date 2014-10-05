@@ -254,7 +254,7 @@
 						<li><a href="?page=notas">Notas</a></li>
 						<li><a href="?page=estadisticas">Estadísticas</a></li>
 						<li><a href="?page=investigaciones">Investigaciones</a></li>
-						<li><a href="?page=personal">Personal</a></li>
+						<!-- <li><a href="?page=personal">Personal</a></li> -->
 						<li><a href="?page=herramientas">Herramientas</a></li>
 					</ul>
 				</nav>
