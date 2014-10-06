@@ -272,6 +272,6 @@
 				?>
 			</div>
 		</div>
-		<p class="small" style="text-align: center;"><strong>Óptica Horus</strong> Beatríz Mayoral<br> Actualizado: <?php echo exec('hg parent --template "{date|shortdate}"'); ?> </p>
+		<p class="small" style="text-align: center;"><strong>Óptica Horus</strong> Beatríz Mayoral<br> <?php echo exec('hg parent --template "{date(date, \'%d %b %Y\')}"'); ?> <br> Versión: <?php echo strtoupper(exec('hg parent --template "{node|short}" | cut -c -3')); ?> </p>
 	</body>
 </html>
