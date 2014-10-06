@@ -1,3 +1,4 @@
+#!/bin/bash
 UN="horus"
 PW="kardon"
 DEST="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../dbdumps"
