@@ -272,6 +272,6 @@
 				?>
 			</div>
 		</div>
-		<p class="small" style="text-align: center;"><strong>Óptica Horus</strong> Beatríz Mayoral<br> <?php echo exec('hg log -r tip | grep date:'); ?> </p>
+		<p class="small" style="text-align: center;"><strong>Óptica Horus</strong> Beatríz Mayoral<br> <?php echo exec('hg parent | grep date:'); ?> </p>
 	</body>
 </html>
