@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Terminal=true
+Icon=/usr/share/icons/gnome/48x48/status/security-medium.png
+Name=Respaldar Expedientes
+Exec=/var/www/html/optica-horus/resources/scripts/db-backup.sh
