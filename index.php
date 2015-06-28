@@ -44,7 +44,7 @@
 			if(!isset($_POST['patient']['is_flagged'])) {
 				$patient->is_flagged = 0;
 			}
-			
+
 			foreach($_POST['patient'] as $key => $value) {
 				$patient->$key = $value;
 			}
@@ -56,8 +56,8 @@
 				if(isset($_POST['investigations'])) { // Sort to ensure order is the same as those SELECTed
 					sort($_POST['investigations']);
 				}
-	
-				if(!empty($_POST['investigations']) && $patient->investigations != $_POST['investigations']) {
+
+				if($patient->investigations != $_POST['investigations']) {
 					$db->query('DELETE FROM ct_patient_investigation WHERE patient_id=' . $patient->id);
 					$stmt = $db->prepare('INSERT INTO ct_patient_investigation (patient_id, investigation_id) VALUES (:patient_id, :investigation_id)');
 					$stmt->bindParam(':patient_id', $patient->id);
@@ -74,10 +74,10 @@
 					unset($_POST['investigations']);
 					unset($_POST['btn_submit']);
 
-					$record = new Record($db); 
+					$record = new Record($db);
 
 					// Split m_od and m_oi and insert them in their corresponding camps
-					foreach(array('m_od', 'm_oi') as $side) { 
+					foreach(array('m_od', 'm_oi') as $side) {
 						$values = $record->ecea_split($_POST[$side]);
 						foreach(array('sphere', 'cylinder', 'axis', 'addition') as $key => $identifier) {
 							$identifier = $side . '_' . $identifier;
@@ -89,7 +89,7 @@
 						$record->$key = $value;
 					}
 					$record->patient_id = $patient->id;
-					$record->save(); 
+					$record->save();
 				}
 
 				$message = array('<p>Los datos fueron almacenados exitosamente!</p>', 'success');
@@ -185,7 +185,7 @@
 				$new_id = $rn->save($is_admin_update);
 				if($new_id) {
 					$message = array('<p><strong>Éxito:</strong> Los datos fueron almacenados exitosamente!</p>', 'success');
-					$_GET['id'] = $new_id; // Hack to properly load everything 
+					$_GET['id'] = $new_id; // Hack to properly load everything
 				}
 			}
 		}
