@@ -1,6 +1,10 @@
 Worklog
 =======
 
+2015-06-27
+----------
+- Se pasó la lista de bugs al issue tracker del Bitbucket
+
 2013-01-11
 ----------
 12:00 - ? | Meeting, decided to revamp expedientes page etc.
