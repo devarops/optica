@@ -1,17 +1,13 @@
 Óptica Horus
 ============
 
+## Intalación
 
+- [Manual de Intalación](https://docs.google.com/document/d/1xaXvTFRoeDiJjlVKqDxx7VevhOL69VbdSUpGfjz2fJk/edit?usp=sharing)
 
-Dependencies
-------------
-
-The installer should check for these.
+### Dependencias
 
 * mbstring
 * exif (.so in php.ini)
-
-### PHP packages
-
 * php-mysql
 * php-json
