@@ -1,6 +1,12 @@
 Worklog
 =======
 
+2015-06-28
+----------
+- Se actualizó la lista de bugs en el issue tracker del Bitbucket
+- Se actualizó el [manual de instalación](https://docs.google.com/document/d/1xaXvTFRoeDiJjlVKqDxx7VevhOL69VbdSUpGfjz2fJk/edit?usp=sharing)
+- En lugar de crear un archivo `INSTALL.md` en este directorio, se decidió dejar el [manual de instalación](https://docs.google.com/document/d/1xaXvTFRoeDiJjlVKqDxx7VevhOL69VbdSUpGfjz2fJk/edit?usp=sharing) en Google Docs, ya que así es más fácil usarlo para mi madre
+
 2015-06-27
 ----------
 - Se pasó la lista de bugs al issue tracker del Bitbucket
