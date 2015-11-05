@@ -28,7 +28,7 @@
 				$num_results = sizeof($result);
 				$dataobj = new stdClass(); // Generic object as container
 				$dataobj->num_patients = $num_results;
-				$dataobj->header = 'Enlistado de personas revisadas por Optica Horus\linebreak ' . (isset($_GET['referencia']) ? 'para ' . $_GET['referencia'] : '') . ' en el periodo de ' . $_GET['date_from'] . ' a ' . $_GET['date_to']; 
+				$dataobj->header = 'Enlistado de personas revisadas por Óptica Horus\linebreak ' . (isset($_GET['referencia']) ? 'para ' . $_GET['referencia'] : '') . ' en el periodo de ' . $_GET['date_from'] . ' a ' . $_GET['date_to']; 
 				// Slightly ugly hack for filename: firstname_lastname => from_date_to_date
 				$dataobj->patient_firstname = $_GET['date_from'];
 				$dataobj->patient_lastname  = $_GET['date_to'];
@@ -43,7 +43,7 @@
 				'hipermetropía'   => 0,
 				'presbicia'       => 0,
 				'anisometropía'   => 0
-			);  
+			);
 
 			foreach($result as $row) {
 				$record     = new Record($db, $row['record_id']);
@@ -109,7 +109,7 @@
 
 
 		//$latex = preg_replace('/#(\w+)#/e', '$data->\\1', $template);
-		$latex = preg_replace_callback('/#(\w+)#/', function($matches) use ($data) { 
+		$latex = preg_replace_callback('/#(\w+)#/', function($matches) use ($data) {
 			return $data->$matches[1];
 		}, $template);
 

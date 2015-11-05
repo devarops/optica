@@ -2,5 +2,5 @@
 Type=Application
 Terminal=true
 Icon=/usr/share/icons/gnome/48x48/status/software-update-available.png
-Name=Actualizar Horus
-Exec=/var/www/html/optica-horus/resources/scripts/update_horus.sh
+Name=Actualizar Programa
+Exec=/var/www/html/optica/resources/scripts/update_optica.sh

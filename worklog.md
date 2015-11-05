@@ -10,7 +10,7 @@ Worklog
 2015-06-27
 ----------
 - Se pasó la lista de bugs al issue tracker del Bitbucket
-- Se arregló bug [#5](https://bitbucket.org/evaristor/optica-horus/issue/5)
+- Se arregló bug [#5](https://bitbucket.org/evaristor/optica/issue/5)
 
 2013-01-11
 ----------
