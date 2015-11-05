@@ -2,7 +2,7 @@
 	require_once('../../db_connect.php'); // For $db_ variables
 	ob_start();
 
-	$fn  = 'db_opticahorus_' . date('Y-m-d_H-i-s') . '.sql';
+	$fn  = 'optica_' . date('Y-m-d') . '.sql';
 	$cmd = '/usr/bin/mysqldump --add-drop-table --host=' . $db_host . ' --user=' . $db_user .
 		' --password=' . $db_pwd . ' ' . $db_name;// . ' > ' . $fn;
 
