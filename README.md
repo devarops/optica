@@ -56,7 +56,7 @@ Instala Mercurial para descargar el programa de la óptica. Ejecutar en la termi
 sudo apt-get install mercurial
 ```
 
-Entrar a la carpeta donde se descargará el programa<sup><a href="#nota1" id="ref1">1</a></sup>:
+Entrar a la carpeta donde se descargará el programa (ver nota 1):
 
 ```
 cd /var/www/html
@@ -71,7 +71,7 @@ sudo hg clone https://bitbucket.org/evaristor/optica
 Bitbucket pedirá nombre de usuario y contraseña. El nombre de usuario es: _BeatrizMayoral_ y la contraseña es: _Horus_.
 
 ## 6. Cambiar al dueño y los permisos del programa
-Ejecutar en la terminal<sup><a href="#nota2" id="ref2">2</a></sup>:
+Ejecutar en la terminal (ver nota 2):
 
 ```
 sudo chown -R beatriz  /var/www/html
@@ -95,6 +95,7 @@ Abre `http://localhost/optica` en Google Chrome.
 
 -----
 
-- <sup id="nota1">1</sup> Puedes verificar dónde se debe crear la carpeta _optica_ con el comando `cat /etc/apache2/sites-enabled/000-default.conf | grep DocumentRoot`
- <a href="#ref1" title="Regresar al texto">↩</a>
-- <sup id="nota2">2</sup> Puedes verificar el nombre del usuario con el comando `whoami`. Reemplaza `beatriz` con el nombre del usuario. <a href="#ref2" title="Regresar al texto">↩</a>
+Notas:
+
+1. Puedes verificar dónde se debe crear la carpeta _optica_ con el comando `cat /etc/apache2/sites-enabled/000-default.conf | grep DocumentRoot`
+1. Puedes verificar el nombre del usuario con el comando `whoami`. Reemplaza `beatriz` con el nombre del usuario.
