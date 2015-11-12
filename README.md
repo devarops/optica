@@ -91,7 +91,7 @@ Para que te aparezcan las opciones de _Respaldar Expedientes_ y _Actualizar Prog
 sudo cp /var/www/html/optica/resources/scripts/*.desktop /usr/share/applications
 ```
 
-(Hay un espacio entre el *.desktop y el /usr.) Puedes arrastrar ambos íconos, _Respaldar Expedientes_ y _Actualizar Programa_, que aparecerán en la carpeta `/usr/share/applications` a la barra lateral izquierda de íconos. O los puedes llamar desde las aplicaciones.
+(Hay un espacio entre el `*.desktop` y el `/usr`) Puedes arrastrar ambos íconos, _Respaldar Expedientes_ y _Actualizar Programa_, que aparecerán en la carpeta `/usr/share/applications` a la barra lateral izquierda de íconos. O los puedes llamar desde las aplicaciones del _Dash_.
 
 ## 8. Crear accesos directos a carpetas de Reportes y Respaldos
 Para crear en el escritorio accesos directos a los directorios `/var/www/html/optica/resources/latex` y `/var/www/html/optica/resources/dbdumps`, ejecutar en la terminal:
