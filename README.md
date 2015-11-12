@@ -8,6 +8,7 @@ Ejecutar en la terminal:
 
 ```
 sudo apt-get update
+
 sudo apt-get install texlive texlive-lang-spanish
 ```
 
@@ -33,9 +34,13 @@ Pedirá la contraseña del root de MySQL; la contraseña es _Horus_. Ahora está
 
 ```
 mysql> create user "optica"@"localhost";
+
 mysql> create database optica;
+
 mysql> grant all privileges on optica.* to "optica"@"localhost" identified by "Horus";
+
 mysql> flush privileges;
+
 mysql> exit;
 ```
 
@@ -75,6 +80,7 @@ Ejecutar en la terminal (ver nota 2):
 
 ```
 sudo chown -R beatriz  /var/www/html
+
 sudo chmod -R ugo+rwx  /var/www/html
 ```
 
@@ -88,7 +94,15 @@ sudo cp /var/www/html/optica/resources/scripts/*.desktop /usr/share/applications
 (Hay un espacio entre el *.desktop y el /usr.) Puedes arrastrar ambos íconos, _Respaldar Expedientes_ y _Actualizar Programa_, que aparecerán en la carpeta `/usr/share/applications` a la barra lateral izquierda de íconos. O los puedes llamar desde las aplicaciones.
 
 ## 8. Crear accesos directos a carpetas de Reportes y Respaldos
-Crea accesos directos a los directorios `/var/www/html/optica/resources/latex` y `/var/www/html/optica/resources/dbdumps` y pegarlos en el escritorio. En el primero se guardan las notas, resúmenes y enlistados, en el segundo los respaldos de los expedientes.
+Para crear en el escritorio accesos directos a los directorios `/var/www/html/optica/resources/latex` y `/var/www/html/optica/resources/dbdumps`, ejecutar en la terminal:
+
+```
+ln -s /var/www/html/optica/resources/latex/ ~/Desktop/Reportes
+
+ln -s /var/www/html/optica/resources/dbdumps/ ~/Desktop/Respaldos
+```
+
+En el primero se guardan las notas, resúmenes y enlistados, en el segundo los respaldos de los expedientes.
 
 ## 9. Abre el programa de la óptica
 Abre `http://localhost/optica` en Google Chrome.
