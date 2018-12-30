@@ -254,6 +254,7 @@ class Record {
 	disco,
 	opacidades,
 	pantalla_tangente,
+	okp,
 	pupilas_redondas,
 	pupilas_iguales,
 	pupilas_luz,
@@ -313,6 +314,7 @@ class Record {
 	:disco,
 	:opacidades,
 	:pantalla_tangente,
+	:okp,
 	:pupilas_redondas,
 	:pupilas_iguales,
 	:pupilas_luz,
@@ -383,6 +385,7 @@ class Record {
 		$stmt->bindParam(':disco', $this->disco);
 		$stmt->bindParam(':opacidades', $this->opacidades);
 		$stmt->bindParam(':pantalla_tangente', $this->pantalla_tangente);
+		$stmt->bindParam(':okp', $this->okp);
 		$stmt->bindParam(':pupilas_redondas', $this->pupilas_redondas);
 		$stmt->bindParam(':pupilas_iguales', $this->pupilas_iguales);
 		$stmt->bindParam(':pupilas_luz', $this->pupilas_luz);
