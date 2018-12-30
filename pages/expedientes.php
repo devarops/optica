@@ -664,11 +664,16 @@
 						<input type="radio" name="pupilas_acomodacion" id="pupilas_acomodacion_no" value="2" tabindex="81" <?php if(isset($record->pupilas_acomodacion) && $record->pupilas_acomodacion == 2) { echo 'checked="checked"'; } ?>>
 						<label for="pupilas_acomodacion_no">No</label>
 					</div>
+					<input type="checkbox" class="ocular" name="okp_selector" id="okp" value="1" tabindex="82" <?php if(isset($record->okp) && $record->okp) { echo 'checked'; } ?>><label for="okp" >OKP</label><br>
+					<div class="occular_options" id="radio_okp" <?php if(isset($record->okp) && $record->okp) { echo 'style="display: block;"'; } ?>>
+						<input type="radio" name="okp" id="okp_normal" value="1" tabindex="83" <?php if(isset($record->okp) && $record->okp == 1) { echo 'checked="checked"'; } ?>><label for="okp_normal">Normal</label>
+						<input type="radio" name="okp" id="okp_deficiente" value="2" tabindex="84" <?php if(isset($record->okp) && $record->okp == 2) { echo 'checked="checked"'; } ?>><label for="okp_deficiente">Deficiente</label>
+					</div>
 				</td>
 			</tr>
 		</table>
 		<br>
-		<input type="submit" name="btn_submit" id="btn_submit" value="Almacenar datos" class="floatright" tabindex="82">
+		<input type="submit" name="btn_submit" id="btn_submit" value="Almacenar datos" class="floatright" tabindex="85">
 		<?php if(isset($patient)) { ?>
 			<a href="?page=print&amp;type=resume&amp;id=<?php echo $record->id; ?>" target="_blank"><button type="button" id="btn_print_resume" class="floatright green" style="padding: 12px;">Imprimir resumen</button></a>
 		<?php } ?>
