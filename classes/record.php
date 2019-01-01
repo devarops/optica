@@ -252,6 +252,7 @@ class Record {
 	has_arco_senil,
 	has_amsler,
 	disco,
+	disco_binario,
 	opacidades,
 	pantalla_tangente,
 	okp,
@@ -312,6 +313,7 @@ class Record {
 	:has_arco_senil,
 	:has_amsler,
 	:disco,
+	:disco_binario,
 	:opacidades,
 	:pantalla_tangente,
 	:okp,
@@ -383,6 +385,7 @@ class Record {
 		$stmt->bindParam(':has_arco_senil', $this->has_arco_senil);
 		$stmt->bindParam(':has_amsler', $this->has_amsler);
 		$stmt->bindParam(':disco', $this->disco);
+		$stmt->bindParam(':disco_binario', $this->disco_binario);
 		$stmt->bindParam(':opacidades', $this->opacidades);
 		$stmt->bindParam(':pantalla_tangente', $this->pantalla_tangente);
 		$stmt->bindParam(':okp', $this->okp);
