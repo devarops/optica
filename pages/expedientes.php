@@ -614,8 +614,8 @@
 
 					<input type="checkbox" class="ocular" name="disco_binario" id="disco_binario" value="1" tabindex="0" <?php if(isset($record->disco_binario) && $record->disco_binario) { echo 'checked'; } ?>><label for="disco_binario" >Aspecto del disco</label><br>
 					<div class="occular_options" id="radio_disco_binario" <?php if(isset($record->disco_binario) && $record->disco_binario) { echo 'style="display: block;"'; } ?>>
-						<input type="radio" name="disco_optico" id="disco_normal" value="1" tabindex="0" <?php if(isset($record->disco_binario) && $record->disco_binario == 1) { echo 'checked="checked"'; } ?>><label for="disco_normal">Normal</label>
-						<input type="radio" name="disco_optico" id="disco_anormal" value="2" tabindex="0" <?php if(isset($record->disco_binario) && $record->disco_binario == 2) { echo 'checked="checked"'; } ?>><label for="disco_anormal">Anormal</label>
+						<input type="radio" name="disco_binario" id="disco_normal"  value="1" tabindex="0" <?php if(isset($record->disco_binario) && $record->disco_binario == 1) { echo 'checked="checked"'; } ?>><label for="disco_normal" >Normal</label>
+						<input type="radio" name="disco_binario" id="disco_anormal" value="2" tabindex="0" <?php if(isset($record->disco_binario) && $record->disco_binario == 2) { echo 'checked="checked"'; } ?>><label for="disco_anormal">Anormal</label>
 					</div>
 				</td>
 			</tr>
@@ -675,6 +675,47 @@
 						<input type="radio" name="okp" id="okp_normal" value="1" tabindex="0" <?php if(isset($record->okp) && $record->okp == 1) { echo 'checked="checked"'; } ?>><label for="okp_normal">Normal</label>
 						<input type="radio" name="okp" id="okp_deficiente" value="2" tabindex="0" <?php if(isset($record->okp) && $record->okp == 2) { echo 'checked="checked"'; } ?>><label for="okp_deficiente">Deficiente</label>
 					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4	">
+					EAODP =
+					<?php
+						$riesgo_edad = 0;
+						$riesgo_antecfam = 0;
+						$riesgo_okp = 0;
+						$riesgo_disco = 0;
+						$riesgo_pio = 0;
+						# Edad
+						$edad = date('Y', strtotime($record->add_date)) - $patient->birthdate;
+						if ($edad >= 55) {$riesgo_edad = 1;}
+						# Antecedentes familiares
+						if(isset($record->has_glaucoma_history) && $record->has_glaucoma_history) { $riesgo_antecfam = 1; }
+						# OKP
+						if(isset($record->okp) && $record->okp == 2) { $riesgo_okp = 1; }
+						# Disco óptico
+						if(isset($record->disco_binario) && $record->disco_binario == 2) { $riesgo_disco = 1; }
+						# PIO
+						if((isset($record->tonometria_od) && $record->tonometria_od > 21) || (isset($record->tonometria_oi) && $record->tonometria_oi > 21)) { $riesgo_pio = 1; }
+
+						echo "$riesgo_edad$riesgo_antecfam$riesgo_okp$riesgo_disco$riesgo_pio <br/>";
+
+						$coef_intercept = -5.2792;
+						$coef_edad = 1.7797;
+						$coef_antecfam = 0.5107;
+						$coef_okp = 3.9131;
+						$coef_disco = 2.1729;
+						$coef_pio = 4.5310;
+
+						$z = $coef_intercept + $coef_edad*$riesgo_edad + $coef_antecfam*$riesgo_antecfam + $coef_okp*$riesgo_okp + $coef_disco*$riesgo_disco + $coef_pio*$riesgo_pio;
+						$P = 1/(1+exp(-$z));
+						$corte = 0.444;
+						if ($P > $corte) {
+							echo "Probabilidad de riesgo de glaucoma = " . round($P, 3) . " > $corte &#8658; <b>con riesgo</b> de glaucoma";
+						} else {
+							echo "Probabilidad de riesgo de glaucoma = " . round($P, 3) . " &#8658; <b>sin</b> riesgo de glaucoma";
+						}
+					?>
 				</td>
 			</tr>
 		</table>
