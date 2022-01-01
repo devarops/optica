@@ -184,28 +184,6 @@
 			}
 		});
 
-		//jQuery('.item_name').change(function() {
-		jQuery('body').on('change', '.item_name', function() {
-
-			if(jQuery(this).hasClass('frame')) {
-				var frame_id = jQuery(this).val();
-				if(available_frames.indexOf(frame_id) == -1) {
-					var errormsg = jQuery('<p class="small error">El armazón ' + jQuery(this).val() + ' no existe o ya fue vendido.</p>').delay('4000').fadeOut();
-					jQuery(this).parent().append(errormsg);
-					jQuery(this).val('');
-					jQuery(this).parent().siblings('.iprice').children('input[type=number]').val('').change();
-				}
-			} else if(jQuery(this).hasClass('lens')) {
-				var lens = jQuery(this).val();
-				if(available_lenses.indexOf(lens) == -1) {
-					var errormsg = jQuery('<p class="small error">El lente ' + lens + ' no existe.</p>').delay('4000').fadeOut();
-					jQuery(this).parent().append(errormsg);
-					jQuery(this).val('');
-					jQuery(this).parent().siblings('.iprice').children('input[type=number]').val('').change();
-				}
-			}
-		});
-
 		// Cost calculation
 		jQuery('.product_price, #down_payment').change(function() {
 			var commission = 0;
