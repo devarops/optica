@@ -25,6 +25,7 @@ docker run \
 ```shell
 docker run \
     --detach \
+    --name optica \
     --publish 80:80 \
     --restart always \
     --volume optica_mysql_vol:/var/lib/mysql \
