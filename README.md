@@ -9,6 +9,13 @@ mkdir --parents /home/beatriz/Desktop/Fotos
 mkdir --parents /home/beatriz/Desktop/Reportes
 mkdir --parents /home/beatriz/Desktop/Respaldos
 ```
+Los directorios deben de tener permisos del tipo:
+
+```shell
+chmod 0777 /home/beatriz/Desktop/Fotos
+chmod 0777 /home/beatriz/Desktop/Reportes
+chmod 0777 /home/beatriz/Desktop/Respaldos
+```
 
 Copia el respaldo de la base de datos `optica.sql` al directorio `/home/beatriz/Desktop/Respaldos`.
 
