@@ -41,3 +41,14 @@ docker run \
 
 Abre `http://localhost/optica` en Google Chrome.
 
+## Respaldo
+Primero detenemos todos los contenedores y después:
+
+```shell
+docker run \
+    --rm \
+    --volume /home/beatriz/Desktop/Respaldos:/data \
+    --volume optica_mysql_vol:/var/lib/mysql \
+    evaristor/optica:latest bash -c "/etc/init.d/mysql start && mysqldump -uoptica -pHorus optica > /data/optica.sql"
+```
+
