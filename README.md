@@ -49,6 +49,9 @@ docker run \
 Abre `http://localhost/optica` en Google Chrome.
 
 ## Respaldo
+
+### En la terminal
+
 Primero detenemos todos los contenedores y después:
 
 ```shell
@@ -59,3 +62,10 @@ docker run \
     evaristor/optica:latest bash -c "/etc/init.d/mysql start && mysqldump -uoptica -pHorus optica > /data/optica.sql"
 ```
 
+### Haciendo clic en un ícono del escritorio
+
+Alternativamente, puedes hacer clic en un ícono del escritorio. Así no necesitas usar la terminal.
+
+Copia el archivo `resources/scripts/backup_optica.desktop` al Escritorio y el archivo `resources/scripts/backup_optica.sh` a `/home/beatriz/scripts/`.
+
+Finalmente, haz clic en el ícono que aparecerá en el escritorio.
