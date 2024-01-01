@@ -78,3 +78,11 @@ Alternativamente, puedes hacer clic en un ícono del escritorio. Así no necesit
 Copia el archivo `resources/scripts/backup_optica.desktop` al Escritorio y el archivo `resources/scripts/backup_optica.sh` a `/home/beatriz/scripts/`.
 
 Finalmente, haz clic en el ícono que aparecerá en el escritorio.
+
+### Restauración
+
+Para restaurar el respaldo ejecutamos la siguiente instrucción:
+
+```shell
+docker exec optica bash -c "mysql -uoptica -pHorus optica < /var/www/html/optica/resources/dbdumps/optica.sql"
+```
