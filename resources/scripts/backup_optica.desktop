@@ -3,4 +3,4 @@ Type=Application
 Terminal=true
 Icon=/usr/share/icons/Adwaita/48x48/status/security-medium-symbolic.symbolic.png
 Name=Respaldar Expedientes
-Exec=/home/beatriz/scripts/backup_optica.sh
+Exec=docker exec optica /var/www/html/optica/resources/scripts/backup_optica.sh
