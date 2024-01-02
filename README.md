@@ -75,14 +75,28 @@ docker run \
 
 Alternativamente, puedes hacer clic en un ícono del escritorio. Así no necesitas usar la terminal.
 
-Copia el archivo `resources/scripts/backup_optica.desktop` al Escritorio y el archivo `resources/scripts/backup_optica.sh` a `/home/beatriz/scripts/`.
+Copia el archivo `resources/scripts/backup_optica.desktop` al Escritorio.
+
+El archivo anterior deben ser ejecutable: `chmod +x`.
 
 Finalmente, haz clic en el ícono que aparecerá en el escritorio.
 
-### Restauración
+## Restauración
+
+### En la terminal
 
 Para restaurar el respaldo ejecutamos la siguiente instrucción:
 
 ```shell
 docker exec optica bash -c "mysql -uoptica -pHorus optica < /var/www/html/optica/resources/dbdumps/optica.sql"
 ```
+
+### Haciendo clic en un ícono del escritorio
+
+Alternativamente, puedes hacer clic en un ícono del escritorio. Así no necesitas usar la terminal.
+
+Copia el archivo `resources/scripts/restore_optica.desktop` al Escritorio y el archivo `resources/scripts/restore_optica.sh` a `/home/beatriz/scripts/`.
+
+Los archivos anteriores deben ser ejecutables: `chmod +x`.
+
+Finalmente, haz clic en el ícono que aparecerá en el escritorio.
